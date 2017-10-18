@@ -9,7 +9,7 @@ import java.io.PrintWriter;
 
 public class Persister {
 
-    static void write(Database database) throws FileNotFoundException {
+    public static void write(Database database) throws FileNotFoundException {
         System.out.println("Writing to database");
         PrintWriter writer = new PrintWriter(new File("database/tourists.csv"));
         writer.println("H,NAME,LOCATION");

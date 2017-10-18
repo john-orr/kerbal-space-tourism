@@ -1,5 +1,8 @@
 package com.company.model;
 
+import com.company.Persister;
+
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,11 +18,12 @@ public class Database {
         return tourists;
     }
 
-    public void addTourist(Tourist tourist) {
+    public void insertTourist(Tourist tourist) throws FileNotFoundException {
         if (this.tourists == null) {
             this.tourists = new ArrayList<>();
         }
         this.tourists.add(tourist);
+        Persister.write(this);
     }
 
     public String printTourists() {

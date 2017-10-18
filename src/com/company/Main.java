@@ -21,8 +21,7 @@ public class Main {
             if (choice == ADD_NEW_TOURIST) {
                 System.out.println("Please enter the name of the new tourist");
                 String name = input.nextLine();
-                database.addTourist(new Tourist(name));
-                Persister.write(database);
+                database.insertTourist(new Tourist(name));
             } else if (choice == VIEW_TOURISTS) {
                 System.out.println(database.printTourists());
             }
