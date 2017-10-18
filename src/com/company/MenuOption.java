@@ -3,7 +3,8 @@ package com.company;
 public enum MenuOption {
     ADD_NEW_TOURIST(1, "Add New Tourist"),
     VIEW_TOURISTS(2, "View Tourists"),
-    ADD_NEW_FLIGHT(3, "Add New Flight");
+    ADD_NEW_FLIGHT(3, "Add New Flight"),
+    VIEW_FLIGHTS(4, "View Flights");
 
     int id;
     String text;

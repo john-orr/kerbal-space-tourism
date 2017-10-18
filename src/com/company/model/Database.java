@@ -3,17 +3,17 @@ package com.company.model;
 import com.company.Persister;
 
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
 import java.util.List;
 
 public class Database {
 
     List<Tourist> tourists;
     List<Flight> flights;
+    public static final String COLUMN_FORMAT = "%-10s";
 
-    public Database(List<Tourist> tourists) {
+    public Database(List<Tourist> tourists, List<Flight> flights) {
         this.tourists = tourists;
-        this.flights = new ArrayList<>();
+        this.flights = flights;
     }
 
     public List<Tourist> getTourists() {
@@ -26,12 +26,12 @@ public class Database {
     }
 
     public String printTourists() {
-        String nameColumnFormat = "%-10s";
-        StringBuilder output =
-                new StringBuilder("TOURISTS\n").append(String.format(nameColumnFormat, "NAME")).append("LOCATION\n");
+        StringBuilder output = new StringBuilder("TOURISTS\n")
+                .append(tableCell("NAME"))
+                .append(tableCell("LOCATION")).append("\n");
         for (Tourist tourist : tourists) {
-            output.append(String.format(nameColumnFormat, tourist.getName())).append(tourist.getLocation())
-                    .append("\n");
+            output.append(tableCell(tourist.getName()))
+                    .append(tableCell(tourist.getLocation())).append("\n");
         }
         return output.toString();
     }
@@ -53,7 +53,24 @@ public class Database {
         Persister.write(this);
     }
 
+    public String printFlights() {
+        StringBuilder output = new StringBuilder("FLIGHTS\n")
+                .append(tableCell("KEY"))
+                .append(tableCell("ORIGIN"))
+                .append(tableCell("DESTINATION")).append("\n");
+        for (Flight flight : flights) {
+            output.append(tableCell(flight.getKey()))
+                    .append(tableCell(flight.getOrigin()))
+                    .append(tableCell(flight.getDestination())).append("\n");
+        }
+        return output.toString();
+    }
+
+    private String tableCell(String content) {
+        return String.format(COLUMN_FORMAT, content);
+    }
+
     public String print() {
-        return printTourists();
+        return printTourists() + printFlights();
     }
 }

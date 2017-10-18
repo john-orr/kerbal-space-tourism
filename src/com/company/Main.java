@@ -31,6 +31,8 @@ public class Main {
                 System.out.println("Please enter the destination of the new flight");
                 String destination = input.nextLine();
                 database.insertFlight(new Flight(origin, destination));
+            }else if (choice == VIEW_FLIGHTS) {
+                System.out.println(database.printFlights());
             }
 
             String repeat;

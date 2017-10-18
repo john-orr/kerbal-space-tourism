@@ -10,9 +10,9 @@ public class Tourist {
         this.location = "KERBIN";
     }
 
-    public Tourist(String name, String location) {
-        this.name = name;
-        this.location = location;
+    public Tourist(String[] data) {
+        this.name = data[1];
+        this.location = data[2];
     }
 
     public String getName() {

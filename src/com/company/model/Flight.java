@@ -11,6 +11,12 @@ public class Flight {
         this.destination = destination.toUpperCase();
     }
 
+    public Flight(String[] data) {
+        this.key = data[1];
+        this.origin = data[2];
+        this.destination = data[3];
+    }
+
     public String getKey() {
         return key;
     }
