@@ -16,7 +16,7 @@ public class Main {
 
     public static void main(String[] args) throws IOException {
         init();
-        while (true) {
+        do {
             MenuOption choice = menu();
             System.out.println("Operation '" + choice.getText() + "' selected");
             if (choice == ADD_NEW_TOURIST) {
@@ -33,20 +33,19 @@ public class Main {
                 database.insertFlight(new Flight(origin, destination));
             }
 
-            //todo do while
-            String repeat = "";
-            while (!repeat.equals("y") && !repeat.equals("n")) {
+            String repeat;
+            do {
                 System.out.println("Perform another operation?[y/n]");
                 repeat = input.nextLine();
-            }
+            } while (!repeat.equals("y") && !repeat.equals("n"));
             if (repeat.equals("n")) {
                 break;
             }
-        }
+        } while (true);
     }
 
     private static MenuOption menu() {
-        while (true) {
+        do {
             System.out.println("Please choose an operation:");
             for (MenuOption option : MenuOption.values()) {
                 System.out.println(option.menuDisplay());
@@ -63,7 +62,7 @@ public class Main {
             } else {
                 return menuOption;
             }
-        }
+        } while (true);
     }
 
     static void init() throws IOException {
