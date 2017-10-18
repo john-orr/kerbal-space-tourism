@@ -17,6 +17,7 @@ public class Main {
 
     public static void main(String[] args) throws IOException {
         init();
+        String repeat;
         do {
             MenuOption choice = menu();
             System.out.println("Operation '" + choice.getText() + "' selected");
@@ -32,43 +33,54 @@ public class Main {
                 touristItinerary();
             }
 
-            String repeat;
             do {
-                System.out.println("Perform another operation?[y/n]");
+                System.out.println("Perform another operation? [y/n]");
                 repeat = input.nextLine();
-            } while (!repeat.equals("y") && !repeat.equals("n"));
-            if (repeat.equals("n")) {
-                break;
-            }
-        } while (true);
+            } while (!(repeat.equals("y") || repeat.equals("n")));
+        } while (repeat.equals("y"));
     }
 
     private static void touristItinerary() throws FileNotFoundException {
-        Tourist tourist;
+        String touristRepeat;
         do {
-            database.printTourists();
-            System.out.println("Please select a tourist");
-            String name = input.nextLine();
-            tourist = database.findTourist(name);
-        } while (tourist == null);
-        Flight flight = null;
-        do {
-            if (!tourist.getItinerary().isEmpty()) {
-                database.printTouristItinerary(tourist);
-            }
-            if (tourist.getItinerary().size() != database.getFlights().size()) {
-                database.printAvailableFlights(tourist);
-            } else {
-                System.out.println("No available flights");
-                break;
-            }
-            System.out.println("Please enter the key of the flight to add to the itinerary");
-            String key = input.nextLine();
-            flight = database.findFlight(key);
-        } while (flight == null);
-        if (flight != null) {
-            database.insertTouristItinerary(tourist, flight);
-        }
+            Tourist tourist;
+            do {
+                database.printTourists();
+                System.out.println("Please select a tourist");
+                String name = input.nextLine();
+                tourist = database.findTourist(name);
+            } while (tourist == null);
+            String flightRepeat;
+            do {
+                Flight flight = null;
+                do {
+                    if (!tourist.getItinerary().isEmpty()) {
+                        database.printTouristItinerary(tourist);
+                    }
+                    if (tourist.getItinerary().size() != database.getFlights().size()) {
+                        database.printAvailableFlights(tourist);
+                    } else {
+                        System.out.println("No available flights");
+                        break;
+                    }
+                    System.out.println("Please enter the key of the flight to add to the itinerary");
+                    String key = input.nextLine();
+                    flight = database.findFlight(key);
+                } while (flight == null);
+                if (flight == null) {
+                    break;
+                }
+                database.insertTouristItinerary(tourist, flight);
+                do {
+                    System.out.println("Add another flight? [y/n]");
+                    flightRepeat = input.nextLine();
+                } while (!(flightRepeat.equals("y") || flightRepeat.equals("n")));
+            } while (flightRepeat.equals("y"));
+            do {
+                System.out.println("Switch tourist? [y/n]");
+                touristRepeat = input.nextLine();
+            } while (!(touristRepeat.equals("y") || touristRepeat.equals("n")));
+        } while (touristRepeat.equals("y"));
     }
 
     private static void viewFlights() {
