@@ -3,7 +3,6 @@ package com.company.model;
 import com.company.Persister;
 
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -36,7 +35,7 @@ public class Database {
         Persister.write(this);
     }
 
-    public String printTourists() {
+    public void printTourists() {
         StringBuilder output = new StringBuilder("TOURISTS\n")
                 .append(tableCell("NAME"))
                 .append(tableCell("LOCATION")).append("\n");
@@ -44,7 +43,7 @@ public class Database {
             output.append(tableCell(tourist.getName()))
                     .append(tableCell(tourist.getLocation())).append("\n");
         }
-        return output.toString();
+        System.out.println(output.toString());
     }
 
     public List<Flight> getFlights() {
@@ -73,11 +72,11 @@ public class Database {
         Persister.write(this);
     }
 
-    public String printFlights() {
-        return printFlights(Collections.<String>emptyList());
+    public void printFlights() {
+        printFlights(Collections.<String>emptyList());
     }
 
-    public String printFlights(List<String> excludeKeys) {
+    public void printFlights(List<String> excludeKeys) {
         StringBuilder output = new StringBuilder("FLIGHTS\n")
                 .append(tableCell("KEY"))
                 .append(tableCell("ORIGIN"))
@@ -89,18 +88,19 @@ public class Database {
                         .append(tableCell(flight.getDestination())).append("\n");
             }
         }
-        return output.toString();
+        System.out.println(output.toString());
     }
 
     private String tableCell(String content) {
         return String.format(COLUMN_FORMAT, content);
     }
 
-    public String print() {
-        return printTourists() + printFlights();
+    public void print() {
+        printTourists();
+        printFlights();
     }
 
-    public String printTouristItinerary(Tourist tourist) {
+    public void printTouristItinerary(Tourist tourist) {
         StringBuilder output = new StringBuilder("ITINERARY\n")
                 .append(tableCell("NAME"))
                 .append(tableCell("F.KEY"))
@@ -112,12 +112,12 @@ public class Database {
                     .append(tableCell(flight.getOrigin()))
                     .append(tableCell(flight.getDestination())).append("\n");
         }
-        return output.toString();
+        System.out.println(output.toString());
     }
 
-    public String printAvailableFlights(Tourist tourist) {
+    public void printAvailableFlights(Tourist tourist) {
         List<String> flightKeys = tourist.getFlightKeys();
-        return printFlights(flightKeys);
+        printFlights(flightKeys);
     }
 
     public void insertTouristItinerary(Tourist tourist, Flight flight) throws FileNotFoundException {

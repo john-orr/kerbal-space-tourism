@@ -4,6 +4,7 @@ import com.company.model.Database;
 import com.company.model.Flight;
 import com.company.model.Tourist;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Scanner;
 
@@ -20,11 +21,9 @@ public class Main {
             MenuOption choice = menu();
             System.out.println("Operation '" + choice.getText() + "' selected");
             if (choice == ADD_NEW_TOURIST) {
-                System.out.println("Please enter the name of the new tourist");
-                String name = input.nextLine();
-                database.insertTourist(new Tourist(name));
+                addNewTourist();
             } else if (choice == VIEW_TOURISTS) {
-                System.out.println(database.printTourists());
+                viewTourists();
             } else if (choice == ADD_NEW_FLIGHT) {
                 System.out.println("Please enter the origin of the new flight");
                 String origin = input.nextLine();
@@ -32,11 +31,11 @@ public class Main {
                 String destination = input.nextLine();
                 database.insertFlight(new Flight(origin, destination));
             } else if (choice == VIEW_FLIGHTS) {
-                System.out.println(database.printFlights());
+                database.printFlights();
             } else if (choice == TOURIST_ITINERARY) {
                 Tourist tourist;
                 do {
-                    System.out.println(database.printTourists());
+                    database.printTourists();
                     System.out.println("Please select a tourist");
                     String name = input.nextLine();
                     tourist = database.findTourist(name);
@@ -44,10 +43,10 @@ public class Main {
                 Flight flight = null;
                 do {
                     if (!tourist.getItinerary().isEmpty()) {
-                        System.out.println(database.printTouristItinerary(tourist));
+                        database.printTouristItinerary(tourist);
                     }
                     if (tourist.getItinerary().size() != database.getFlights().size()) {
-                        System.out.println(database.printAvailableFlights(tourist));
+                        database.printAvailableFlights(tourist);
                     } else {
                         System.out.println("No available flights");
                         break;
@@ -70,6 +69,16 @@ public class Main {
                 break;
             }
         } while (true);
+    }
+
+    private static void viewTourists() {
+        database.printTourists();
+    }
+
+    private static void addNewTourist() throws FileNotFoundException {
+        System.out.println("Please enter the name of the new tourist");
+        String name = input.nextLine();
+        database.insertTourist(new Tourist(name));
     }
 
     private static MenuOption menu() {
