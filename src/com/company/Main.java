@@ -25,39 +25,11 @@ public class Main {
             } else if (choice == VIEW_TOURISTS) {
                 viewTourists();
             } else if (choice == ADD_NEW_FLIGHT) {
-                System.out.println("Please enter the origin of the new flight");
-                String origin = input.nextLine();
-                System.out.println("Please enter the destination of the new flight");
-                String destination = input.nextLine();
-                database.insertFlight(new Flight(origin, destination));
+                addNewFlight();
             } else if (choice == VIEW_FLIGHTS) {
-                database.printFlights();
+                viewFlights();
             } else if (choice == TOURIST_ITINERARY) {
-                Tourist tourist;
-                do {
-                    database.printTourists();
-                    System.out.println("Please select a tourist");
-                    String name = input.nextLine();
-                    tourist = database.findTourist(name);
-                } while (tourist == null);
-                Flight flight = null;
-                do {
-                    if (!tourist.getItinerary().isEmpty()) {
-                        database.printTouristItinerary(tourist);
-                    }
-                    if (tourist.getItinerary().size() != database.getFlights().size()) {
-                        database.printAvailableFlights(tourist);
-                    } else {
-                        System.out.println("No available flights");
-                        break;
-                    }
-                    System.out.println("Please enter the key of the flight to add to the itinerary");
-                    String key = input.nextLine();
-                    flight = database.findFlight(key);
-                } while (flight == null);
-                if (flight != null) {
-                    database.insertTouristItinerary(tourist, flight);
-                }
+                touristItinerary();
             }
 
             String repeat;
@@ -69,6 +41,46 @@ public class Main {
                 break;
             }
         } while (true);
+    }
+
+    private static void touristItinerary() throws FileNotFoundException {
+        Tourist tourist;
+        do {
+            database.printTourists();
+            System.out.println("Please select a tourist");
+            String name = input.nextLine();
+            tourist = database.findTourist(name);
+        } while (tourist == null);
+        Flight flight = null;
+        do {
+            if (!tourist.getItinerary().isEmpty()) {
+                database.printTouristItinerary(tourist);
+            }
+            if (tourist.getItinerary().size() != database.getFlights().size()) {
+                database.printAvailableFlights(tourist);
+            } else {
+                System.out.println("No available flights");
+                break;
+            }
+            System.out.println("Please enter the key of the flight to add to the itinerary");
+            String key = input.nextLine();
+            flight = database.findFlight(key);
+        } while (flight == null);
+        if (flight != null) {
+            database.insertTouristItinerary(tourist, flight);
+        }
+    }
+
+    private static void viewFlights() {
+        database.printFlights();
+    }
+
+    private static void addNewFlight() throws FileNotFoundException {
+        System.out.println("Please enter the origin of the new flight");
+        String origin = input.nextLine();
+        System.out.println("Please enter the destination of the new flight");
+        String destination = input.nextLine();
+        database.insertFlight(new Flight(origin, destination));
     }
 
     private static void viewTourists() {
