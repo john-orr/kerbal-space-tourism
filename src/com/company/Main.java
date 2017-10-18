@@ -1,6 +1,7 @@
 package com.company;
 
 import com.company.model.Database;
+import com.company.model.Flight;
 import com.company.model.Tourist;
 
 import java.io.IOException;
@@ -24,8 +25,15 @@ public class Main {
                 database.insertTourist(new Tourist(name));
             } else if (choice == VIEW_TOURISTS) {
                 System.out.println(database.printTourists());
+            } else if (choice == ADD_NEW_FLIGHT) {
+                System.out.println("Please enter the origin of the new flight");
+                String origin = input.nextLine();
+                System.out.println("Please enter the destination of the new flight");
+                String destination = input.nextLine();
+                database.insertFlight(new Flight(origin, destination));
             }
 
+            //todo do while
             String repeat = "";
             while (!repeat.equals("y") && !repeat.equals("n")) {
                 System.out.println("Perform another operation?[y/n]");
