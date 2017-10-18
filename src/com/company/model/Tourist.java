@@ -6,8 +6,13 @@ public class Tourist {
     private String location;
 
     public Tourist(String name) {
+        this.name = name.toUpperCase();
+        this.location = "KERBIN";
+    }
+
+    public Tourist(String name, String location) {
         this.name = name;
-        this.location = "";
+        this.location = location;
     }
 
     public String getName() {
