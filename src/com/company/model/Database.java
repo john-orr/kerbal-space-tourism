@@ -3,13 +3,15 @@ package com.company.model;
 import com.company.Persister;
 
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class Database {
 
     List<Tourist> tourists;
     List<Flight> flights;
-    public static final String COLUMN_FORMAT = "%-10s";
+    public static final String COLUMN_FORMAT = "%-15s";
 
     public Database(List<Tourist> tourists, List<Flight> flights) {
         this.tourists = tourists;
@@ -18,6 +20,15 @@ public class Database {
 
     public List<Tourist> getTourists() {
         return tourists;
+    }
+
+    public Tourist findTourist(String name) {
+        for (Tourist tourist : tourists) {
+            if (tourist.getName().equalsIgnoreCase(name)) {
+                return tourist;
+            }
+        }
+        return null;
     }
 
     public void insertTourist(Tourist tourist) throws FileNotFoundException {
@@ -40,6 +51,15 @@ public class Database {
         return flights;
     }
 
+    public Flight findFlight(String key) {
+        for (Flight flight : flights) {
+            if (flight.getKey().equals(key)) {
+                return flight;
+            }
+        }
+        return null;
+    }
+
     public void insertFlight(Flight newFlight) throws FileNotFoundException {
         int keyGen = 0;
         for (Flight flight : flights) {
@@ -54,14 +74,20 @@ public class Database {
     }
 
     public String printFlights() {
+        return printFlights(Collections.<String>emptyList());
+    }
+
+    public String printFlights(List<String> excludeKeys) {
         StringBuilder output = new StringBuilder("FLIGHTS\n")
                 .append(tableCell("KEY"))
                 .append(tableCell("ORIGIN"))
                 .append(tableCell("DESTINATION")).append("\n");
         for (Flight flight : flights) {
-            output.append(tableCell(flight.getKey()))
-                    .append(tableCell(flight.getOrigin()))
-                    .append(tableCell(flight.getDestination())).append("\n");
+            if (!excludeKeys.contains(flight.getKey())) {
+                output.append(tableCell(flight.getKey()))
+                        .append(tableCell(flight.getOrigin()))
+                        .append(tableCell(flight.getDestination())).append("\n");
+            }
         }
         return output.toString();
     }
@@ -72,5 +98,30 @@ public class Database {
 
     public String print() {
         return printTourists() + printFlights();
+    }
+
+    public String printTouristItinerary(Tourist tourist) {
+        StringBuilder output = new StringBuilder("ITINERARY\n")
+                .append(tableCell("NAME"))
+                .append(tableCell("F.KEY"))
+                .append(tableCell("F.ORIGIN"))
+                .append(tableCell("F.DESTINATION")).append("\n");
+        for (Flight flight : tourist.getItinerary()) {
+            output.append(tableCell(tourist.getName()))
+                    .append(tableCell(flight.getKey()))
+                    .append(tableCell(flight.getOrigin()))
+                    .append(tableCell(flight.getDestination())).append("\n");
+        }
+        return output.toString();
+    }
+
+    public String printAvailableFlights(Tourist tourist) {
+        List<String> flightKeys = tourist.getFlightKeys();
+        return printFlights(flightKeys);
+    }
+
+    public void insertTouristItinerary(Tourist tourist, Flight flight) throws FileNotFoundException {
+        tourist.addToItinerary(flight);
+        Persister.write(this);
     }
 }

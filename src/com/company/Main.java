@@ -31,8 +31,34 @@ public class Main {
                 System.out.println("Please enter the destination of the new flight");
                 String destination = input.nextLine();
                 database.insertFlight(new Flight(origin, destination));
-            }else if (choice == VIEW_FLIGHTS) {
+            } else if (choice == VIEW_FLIGHTS) {
                 System.out.println(database.printFlights());
+            } else if (choice == TOURIST_ITINERARY) {
+                Tourist tourist;
+                do {
+                    System.out.println(database.printTourists());
+                    System.out.println("Please select a tourist");
+                    String name = input.nextLine();
+                    tourist = database.findTourist(name);
+                } while (tourist == null);
+                Flight flight = null;
+                do {
+                    if (!tourist.getItinerary().isEmpty()) {
+                        System.out.println(database.printTouristItinerary(tourist));
+                    }
+                    if (tourist.getItinerary().size() != database.getFlights().size()) {
+                        System.out.println(database.printAvailableFlights(tourist));
+                    } else {
+                        System.out.println("No available flights");
+                        break;
+                    }
+                    System.out.println("Please enter the key of the flight to add to the itinerary");
+                    String key = input.nextLine();
+                    flight = database.findFlight(key);
+                } while (flight == null);
+                if (flight != null) {
+                    database.insertTouristItinerary(tourist, flight);
+                }
             }
 
             String repeat;

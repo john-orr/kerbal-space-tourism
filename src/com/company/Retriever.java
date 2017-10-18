@@ -3,6 +3,7 @@ package com.company;
 import com.company.model.Database;
 import com.company.model.Flight;
 import com.company.model.Tourist;
+import com.company.model.TouristItinerary;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -13,7 +14,37 @@ public class Retriever {
     static Database read() throws IOException {
         List<Tourist> tourists = readTourists();
         List<Flight> flights = readFlights();
-        return new Database(tourists, flights);
+        Database database = new Database(tourists, flights);
+        buildItinerary(database);
+        return database;
+    }
+
+    private static void buildItinerary(Database database) throws IOException {
+        List<TouristItinerary> touristItineraries = readTouristItinerary();
+        for (TouristItinerary touristItinerary : touristItineraries) {
+            Tourist tourist = database.findTourist(touristItinerary.getTourist());
+            Flight flight = database.findFlight(touristItinerary.getFlight());
+            tourist.addToItinerary(flight);
+        }
+    }
+
+    private static List<TouristItinerary> readTouristItinerary() throws IOException {
+        BufferedReader reader = new BufferedReader(new FileReader(new File("database/tourist_itinerary.csv")));
+        String line;
+        List<TouristItinerary> touristItineraries = new ArrayList<>();
+        while ((line = reader.readLine()) != null) {
+            try {
+                String[] data = line.split(",", 3);
+                if (data[0].equals("H")) {
+                    continue;
+                }
+                touristItineraries.add(new TouristItinerary(data));
+            } catch (Exception e) {
+                System.out.println("Error reading line " + line);
+                throw e;
+            }
+        }
+        return touristItineraries;
     }
 
     private static List<Tourist> readTourists() throws IOException {

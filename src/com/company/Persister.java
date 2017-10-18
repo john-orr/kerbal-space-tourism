@@ -15,6 +15,18 @@ public class Persister {
         System.out.println("Writing to database");
         writeTourists(database.getTourists());
         writeFlights(database.getFlights());
+        writeTouristItinerary(database.getTourists());
+    }
+
+    private static void writeTouristItinerary(List<Tourist> tourists) throws FileNotFoundException {
+        PrintWriter writer = new PrintWriter(new File("database/tourist_itinerary.csv"));
+        writer.println("H,TOURIST,FLIGHT");
+        for (Tourist tourist : tourists) {
+            for (Flight flight : tourist.getItinerary()) {
+                writer.println("D," + tourist.getName() + "," + flight.getKey());
+            }
+        }
+        writer.close();
     }
 
     private static void writeTourists(List<Tourist> tourists) throws FileNotFoundException {
