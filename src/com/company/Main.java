@@ -21,7 +21,9 @@ public class Main {
         do {
             MenuOption choice = menu();
             System.out.println("Operation '" + choice.getText() + "' selected");
-            if (choice == ADD_NEW_TOURIST) {
+            if (choice == CANCEL) {
+                break;
+            } else if (choice == ADD_NEW_TOURIST) {
                 addNewTourist();
             } else if (choice == VIEW_TOURISTS) {
                 viewTourists();
@@ -44,15 +46,20 @@ public class Main {
         String touristRepeat;
         do {
             Tourist tourist;
+            String name;
             do {
                 database.printTourists();
                 System.out.println("Please select a tourist");
-                String name = input.nextLine();
+                name = input.nextLine();
                 tourist = database.findTourist(name);
-            } while (tourist == null);
+            } while (tourist == null && !name.equals("c"));
+            if (tourist == null) {
+                return;
+            }
             String flightRepeat = null;
             do {
                 Flight flight = null;
+                String key;
                 do {
                     if (!tourist.getItinerary().isEmpty() && flightRepeat == null) {
                         database.printTouristItinerary(tourist);
@@ -63,10 +70,11 @@ public class Main {
                         System.out.println("No available flights");
                         break;
                     }
-                    System.out.println("Please enter the key of the flight to add to the itinerary");
-                    String key = input.nextLine();
+                    System.out
+                            .println("Please enter the key of the flight to add to the itinerary");
+                    key = input.nextLine();
                     flight = database.findFlight(key);
-                } while (flight == null);
+                } while (flight == null && !key.equals("c"));
                 if (flight == null) {
                     break;
                 }
@@ -91,10 +99,19 @@ public class Main {
     private static void addNewFlight() throws FileNotFoundException {
         System.out.println("Please enter the origin of the new flight");
         String origin = input.nextLine();
+        if (origin.equals("c")) {
+            return;
+        }
         System.out.println("Please enter the destination of the new flight");
         String destination = input.nextLine();
+        if (destination.equals("c")) {
+            return;
+        }
         System.out.println("Enter any flyby events on this flight");
         String flyby = input.nextLine();
+        if (flyby.equals("c")) {
+            return;
+        }
         database.insertFlight(new Flight(origin, destination, flyby));
     }
 
@@ -105,6 +122,9 @@ public class Main {
     private static void addNewTourist() throws FileNotFoundException {
         System.out.println("Please enter the name of the new tourist");
         String name = input.nextLine();
+        if (name.equals("c")) {
+            return;
+        }
         database.insertTourist(new Tourist(name));
     }
 
@@ -112,13 +132,20 @@ public class Main {
         do {
             System.out.println("Please choose an operation:");
             for (MenuOption option : MenuOption.values()) {
-                System.out.println(option.menuDisplay());
+                if (option != CANCEL) {
+                    System.out.println(option.menuDisplay());
+                }
             }
             int choice = 0;
+            String userEntry = input.nextLine();
             try {
-                choice = Integer.parseInt(input.nextLine());
+                choice = Integer.parseInt(userEntry);
             } catch (NumberFormatException e) {
-                System.out.println("That was not a number");
+                if (userEntry.equals("c")) {
+                    choice = -1;
+                } else {
+                    System.out.println("That was not a number");
+                }
             }
             MenuOption menuOption = findById(choice);
             if (menuOption == null) {
