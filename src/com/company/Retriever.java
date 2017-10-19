@@ -64,7 +64,6 @@ public class Retriever {
                 flight.addCustomerItinerary(touristItinerary);
                 if (mission != null) {
                     mission.addPassengerItinerary(touristItinerary);
-                    mission.addPassenger(tourist);
                 }
             } catch (Exception e) {
                 System.out.println("Error reading line " + line);

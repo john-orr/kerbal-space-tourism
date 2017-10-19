@@ -1,13 +1,13 @@
 package com.company.model;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class Mission {
 
     private String key;
     private Flight flight;
-    private List<Tourist> passengers = new ArrayList<>();
     private String vessel;
     private String status;
     private List<TouristItinerary> passengerItineraries = new ArrayList<>();
@@ -39,18 +39,6 @@ public class Mission {
         this.flight = flight;
     }
 
-    public List<Tourist> getPassengers() {
-        return passengers;
-    }
-
-    public void setPassengers(List<Tourist> passengers) {
-        this.passengers = passengers;
-    }
-
-    public void addPassenger(Tourist passenger) {
-        this.passengers.add(passenger);
-    }
-
     public String getVessel() {
         return vessel;
     }
@@ -78,5 +66,16 @@ public class Mission {
 
     public void addPassengerItinerary(TouristItinerary passengerItinerary) {
         this.passengerItineraries.add(passengerItinerary);
+    }
+
+    public void removeFromPassengerItineraries(String name) {
+        Iterator iterator = passengerItineraries.listIterator();
+        while (iterator.hasNext()) {
+            TouristItinerary passengerItinerary = (TouristItinerary) iterator.next();
+            if (passengerItinerary.getTourist().getName().equalsIgnoreCase(name)) {
+                iterator.remove();
+                break;
+            }
+        }
     }
 }

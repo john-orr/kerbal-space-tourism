@@ -45,24 +45,24 @@ public class Main {
 
     private static void createMissions() {
         int numFlightsReady = 0;
+        flightLoop:
         for (Flight flight : database.getFlights()) {
             Mission mission = new Mission(flight);
             for (TouristItinerary customerItinerary : flight.getCustomerItineraries()) {
                 if (customerItinerary.getMission() == null && customerItinerary.equals(
                         customerItinerary.getTourist().getNextItineraryItem())) {
-                    mission.addPassenger(customerItinerary.getTourist());
                     mission.addPassengerItinerary(customerItinerary);
                 }
             }
-            if (mission.getPassengers().size() >= flight.getCapacity()) {
+            if (mission.getPassengerItineraries().size() >= flight.getCapacity()) {
                 numFlightsReady++;
                 StringBuilder output =
                         new StringBuilder("Flight ").append(flight.getKey()).append(" from ")
                                 .append(flight.getOrigin()).append(" to ")
                                 .append(flight.getDestination())
                                 .append(" is ready to go with passengers: ");
-                for (Tourist passenger : mission.getPassengers()) {
-                    output.append(passenger.getName()).append("\t");
+                for (TouristItinerary passengerItinerary : mission.getPassengerItineraries()) {
+                    output.append(passengerItinerary.getTourist().getName()).append("\t");
                 }
                 System.out.println(output.toString());
                 String createMission;
@@ -72,25 +72,31 @@ public class Main {
                 } while (!(createMission.equals("y") || createMission.equals("n")));
                 if (createMission.equals("y")) {
                     boolean showItineraries = false;
-                    while (mission.getPassengers().size() > flight.getCapacity()) {
+                    while (mission.getPassengerItineraries().size() > flight.getCapacity()) {
                         if (showItineraries) {
-                            for (Tourist passenger : mission.getPassengers()) {
-                                database.printTouristItinerary(passenger);
+                            for (TouristItinerary passengerItinerary : mission.getPassengerItineraries()) {
+                                database.printTouristItinerary(passengerItinerary.getTourist());
                             }
                         }
                         System.out.println("Who should be left behind?");
-                        for (Tourist passenger : mission.getPassengers()) {
-                            System.out.println(passenger.getName());
+                        for (TouristItinerary passengerItinerary : mission.getPassengerItineraries()) {
+                            System.out.println(passengerItinerary.getTourist().getName());
                         }
                         if (!showItineraries) {
                             System.out.println("Enter i if you want to see their itineraries");
                         }
                         String name = input.nextLine();
                         showItineraries = false;
-                        if (name.equals("i")) {
-                            showItineraries = true;
-                        } else {
-                            mission.getPassengers().remove(new Tourist(name));
+                        switch (name) {
+                            case "i":
+                                showItineraries = true;
+                                break;
+                            case "c":
+                                System.out.println("Mission creation cancelled");
+                                continue flightLoop;
+                            default:
+                                mission.removeFromPassengerItineraries(name);
+                                break;
                         }
                     }
                     mission.setStatus("READY");
@@ -110,6 +116,8 @@ public class Main {
         }
         if (numFlightsReady == 0) {
             System.out.println("No flights are ready to go");
+        } else {
+            System.out.println("No more flights are ready to go");
         }
     }
 
