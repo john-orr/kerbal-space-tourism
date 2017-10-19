@@ -2,14 +2,12 @@ package com.company.model;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
 
 public class Tourist {
 
     private String name;
     private String location;
-    Map<Integer, Flight> itinerary = new TreeMap<>();
+    List<TouristItinerary> itinerary = new ArrayList<>();
 
     public Tourist(String name) {
         this.name = name.toUpperCase();
@@ -37,31 +35,28 @@ public class Tourist {
         this.location = location;
     }
 
-    public Map<Integer, Flight> getItinerary() {
+    public List<TouristItinerary> getItinerary() {
         return itinerary;
     }
 
-    public void setItinerary(Map<Integer, Flight> itinerary) {
+    public void setItinerary(List<TouristItinerary> itinerary) {
         this.itinerary = itinerary;
     }
 
     public void addToItinerary(Flight flight) {
-        addToItinerary(this.itinerary.values().size(), flight);
+        TouristItinerary touristItinerary = new TouristItinerary(this, flight, this.itinerary.size());
+        addToItinerary(touristItinerary);
+        flight.getCustomerItineraries().add(touristItinerary);
     }
 
-    public void addToItinerary(Integer priority, Flight flight) {
-        if (this.itinerary.containsKey(priority)) {
-            System.out.println("Itinerary already contains flight of priority " + priority);
-            return;
-        }
-        this.itinerary.put(priority, flight);
-        flight.getCustomers().add(this);
+    public void addToItinerary(TouristItinerary touristItinerary) {
+        this.itinerary.add(touristItinerary);
     }
 
     public List<String> getFlightKeys() {
         List<String> flightKeys = new ArrayList<>();
-        for (Flight flight : itinerary.values()) {
-            flightKeys.add(flight.getKey());
+        for (TouristItinerary touristItinerary : itinerary) {
+            flightKeys.add(touristItinerary.getFlight().getKey());
         }
         return flightKeys;
     }

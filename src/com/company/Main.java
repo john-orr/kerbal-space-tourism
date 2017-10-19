@@ -50,11 +50,11 @@ public class Main {
                 String name = input.nextLine();
                 tourist = database.findTourist(name);
             } while (tourist == null);
-            String flightRepeat;
+            String flightRepeat = null;
             do {
                 Flight flight = null;
                 do {
-                    if (!tourist.getItinerary().isEmpty()) {
+                    if (!tourist.getItinerary().isEmpty() && flightRepeat == null) {
                         database.printTouristItinerary(tourist);
                     }
                     if (tourist.getItinerary().size() != database.getFlights().size()) {
@@ -71,6 +71,7 @@ public class Main {
                     break;
                 }
                 database.insertTouristItinerary(tourist, flight);
+                database.printTouristItinerary(tourist);
                 do {
                     System.out.println("Add another flight? [y/n]");
                     flightRepeat = input.nextLine();

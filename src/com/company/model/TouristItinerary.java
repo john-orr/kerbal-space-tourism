@@ -2,29 +2,38 @@ package com.company.model;
 
 public class TouristItinerary {
 
-    private String tourist;
-    private String flight;
+    private Tourist tourist;
+    private Flight flight;
     private int priority;
+    private String missionKey;
 
-    public TouristItinerary(String[] data) {
-        this.tourist = data[1];
-        this.flight = data[2];
-        this.priority = Integer.parseInt(data[3]);
+    public TouristItinerary(Tourist tourist, Flight flight, int priority,
+            String missionKey) {
+        this.tourist = tourist;
+        this.flight = flight;
+        this.priority = priority;
+        if (!missionKey.equals("null")) {
+            this.missionKey = missionKey;
+        }
     }
 
-    public String getTourist() {
+    public TouristItinerary(Tourist tourist, Flight flight, int size) {
+        this(tourist, flight, size, "null");
+    }
+
+    public Tourist getTourist() {
         return tourist;
     }
 
-    public void setTourist(String tourist) {
+    public void setTourist(Tourist tourist) {
         this.tourist = tourist;
     }
 
-    public String getFlight() {
+    public Flight getFlight() {
         return flight;
     }
 
-    public void setFlight(String flight) {
+    public void setFlight(Flight flight) {
         this.flight = flight;
     }
 
@@ -34,5 +43,13 @@ public class TouristItinerary {
 
     public void setPriority(int priority) {
         this.priority = priority;
+    }
+
+    public String getMissionKey() {
+        return missionKey;
+    }
+
+    public void setMissionKey(String missionKey) {
+        this.missionKey = missionKey;
     }
 }

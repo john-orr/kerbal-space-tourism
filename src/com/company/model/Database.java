@@ -119,13 +119,13 @@ public class Database {
                 .append(tableCell("DESTINATION"))
                 .append(tableCell("FLYBY"))
                 .append(tableCell("PRIORITY")).append("\n");
-        for (Map.Entry<Integer, Flight> flight : tourist.getItinerary().entrySet()) {
+        for (TouristItinerary touristItinerary : tourist.getItinerary()) {
             output.append(tableCell(tourist.getName()))
-                    .append(tableCell(flight.getValue().getKey()))
-                    .append(tableCell(flight.getValue().getOrigin()))
-                    .append(tableCell(flight.getValue().getDestination()))
-                    .append(tableCell(flight.getValue().getFlyby()))
-                    .append(tableCell(flight.getKey())).append("\n");
+                    .append(tableCell(touristItinerary.getFlight().getKey()))
+                    .append(tableCell(touristItinerary.getFlight().getOrigin()))
+                    .append(tableCell(touristItinerary.getFlight().getDestination()))
+                    .append(tableCell(touristItinerary.getFlight().getFlyby()))
+                    .append(tableCell(touristItinerary.getPriority())).append("\n");
         }
         System.out.println(output.toString());
     }

@@ -3,6 +3,7 @@ package com.company;
 import com.company.model.Database;
 import com.company.model.Flight;
 import com.company.model.Tourist;
+import com.company.model.TouristItinerary;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -13,7 +14,6 @@ import java.util.Map;
 public class Persister {
 
     public static void write(Database database) throws FileNotFoundException {
-        System.out.println("Writing to database");
         writeTourists(database.getTourists());
         writeFlights(database.getFlights());
         writeTouristItinerary(database.getTourists());
@@ -21,12 +21,12 @@ public class Persister {
 
     private static void writeTouristItinerary(List<Tourist> tourists) throws FileNotFoundException {
         PrintWriter writer = new PrintWriter(new File("database/tourist_itinerary.csv"));
-        writer.println("H,TOURIST,FLIGHT,PRIORITY");
+        writer.println("H,TOURIST,FLIGHT,PRIORITY,MISSION_KEY");
         for (Tourist tourist : tourists) {
-            for (Map.Entry<Integer, Flight> flight : tourist.getItinerary().entrySet()) {
-                Integer priority = flight.getKey();
-                String flightKey = flight.getValue().getKey();
-                writer.println("D," + tourist.getName() + "," + flightKey + "," + priority);
+            for (TouristItinerary touristItinerary : tourist.getItinerary()) {
+                writer.println("D," + tourist.getName() + "," + touristItinerary.getFlight()
+                        .getKey() + "," + touristItinerary.getPriority() + "," + touristItinerary
+                        .getMissionKey());
             }
         }
         writer.close();

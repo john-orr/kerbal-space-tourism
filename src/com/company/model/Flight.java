@@ -3,13 +3,13 @@ package com.company.model;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Flight {
+public class Flight implements Comparable<Flight> {
 
     private String key;
     private String origin;
     private String destination;
     private String flyby;
-    private List<Tourist> customers = new ArrayList<>();
+    private List<TouristItinerary> customerItineraries = new ArrayList<>();
 
     public Flight(String origin, String destination, String flyby) {
         this.origin = origin.toUpperCase();
@@ -60,12 +60,17 @@ public class Flight {
         this.flyby = flyby;
     }
 
-    public List<Tourist> getCustomers() {
-        return customers;
+    public List<TouristItinerary> getCustomerItineraries() {
+        return customerItineraries;
     }
 
-    public void setCustomers(List<Tourist> customers) {
-        this.customers = customers;
+    public void setCustomerItineraries(
+            List<TouristItinerary> customerItineraries) {
+        this.customerItineraries = customerItineraries;
+    }
+
+    public void addCustomerItinerary(TouristItinerary touristItinerary) {
+        this.customerItineraries.add(touristItinerary);
     }
 
     @Override
@@ -80,5 +85,21 @@ public class Flight {
             }
         }
         return false;
+    }
+
+    @Override public int compareTo(Flight that) {
+        if (!this.origin.equals(that.origin)) {
+            return this.origin.compareTo(that.origin);
+        }
+        if (!this.destination.equals(that.destination)) {
+            return this.destination.compareTo(that.destination);
+        }
+        if (this.flyby == null) {
+            return -1;
+        }
+        if (that.flyby == null) {
+            return 1;
+        }
+        return this.flyby.compareTo(that.flyby);
     }
 }
