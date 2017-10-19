@@ -65,9 +65,11 @@ public class Main {
                 StringBuilder output =
                         new StringBuilder("Flight ").append(flight.getKey()).append(" from ")
                                 .append(flight.getOrigin()).append(" to ")
-                                .append(flight.getDestination())
-                                // todo flyby
-                                .append(" is ready to go with passengers: ");
+                                .append(flight.getDestination());
+                if (flight.getFlyby() != null) {
+                    output.append(" (flyby ").append(flight.getFlyby()).append(")");
+                }
+                output.append(" is ready to go with passengers: ");
                 for (TouristItinerary passengerItinerary : mission.getPassengerItineraries()) {
                     output.append(passengerItinerary.getTourist().getName()).append("\t");
                 }
