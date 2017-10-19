@@ -158,4 +158,30 @@ public class Database {
         newMission.setKey(String.format("%03d", keyGen + 1));
         this.missions.add(newMission);
     }
+
+    public void printMissions() {
+        StringBuilder output = new StringBuilder("MISSIONS\n")
+                .append(tableCell("KEY"))
+                .append(tableCell("F.KEY"))
+                .append(tableCell("ORIGIN"))
+                .append(tableCell("DESTINATION"))
+                .append(tableCell("FLYBY"))
+                .append(tableCell("VESSEL"))
+                .append(tableCell("STATUS"))
+                .append(tableCell("PASSENGERS")).append("\n");
+        for (Mission mission : missions) {
+            output.append(tableCell(mission.getKey()))
+                    .append(tableCell(mission.getFlight().getKey()))
+                    .append(tableCell(mission.getFlight().getOrigin()))
+                    .append(tableCell(mission.getFlight().getDestination()))
+                    .append(tableCell(mission.getFlight().getFlyby()))
+                    .append(tableCell(mission.getVessel()))
+                    .append(tableCell(mission.getStatus()));
+            for (TouristItinerary passengerItinerary : mission.getPassengerItineraries()) {
+                output.append(passengerItinerary.getTourist().getName()).append("\t");
+            }
+            output.append("\n");
+        }
+        System.out.println(output.toString());
+    }
 }

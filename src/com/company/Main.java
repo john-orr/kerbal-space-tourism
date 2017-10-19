@@ -33,6 +33,8 @@ public class Main {
                 touristItinerary();
             } else if (choice == CREATE_MISSIONS) {
                 createMissions();
+            } else if (choice == UPDATE_MISSION_STATUS) {
+                updateMissionStatus();
             }
 
             do {
@@ -41,6 +43,10 @@ public class Main {
             } while (!(repeat.equals("y") || repeat.equals("n")));
         } while (repeat.equals("y"));
         Persister.write(database);
+    }
+
+    private static void updateMissionStatus() {
+        database.printMissions();
     }
 
     private static void createMissions() {
