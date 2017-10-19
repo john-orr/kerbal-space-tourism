@@ -1,6 +1,6 @@
 package com.company.model;
 
-public class TouristItinerary {
+public class TouristItinerary implements Comparable<TouristItinerary> {
 
     private Tourist tourist;
     private Flight flight;
@@ -51,5 +51,9 @@ public class TouristItinerary {
 
     public void setMissionKey(String missionKey) {
         this.missionKey = missionKey;
+    }
+
+    @Override public int compareTo(TouristItinerary that) {
+        return this.priority - that.priority;
     }
 }

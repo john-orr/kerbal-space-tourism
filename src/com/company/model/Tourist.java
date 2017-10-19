@@ -1,6 +1,7 @@
 package com.company.model;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class Tourist {
@@ -39,6 +40,10 @@ public class Tourist {
         return itinerary;
     }
 
+    public TouristItinerary getLastItineraryItem() {
+        return itinerary.get(itinerary.size() - 1);
+    }
+
     public void setItinerary(List<TouristItinerary> itinerary) {
         this.itinerary = itinerary;
     }
@@ -51,14 +56,7 @@ public class Tourist {
 
     public void addToItinerary(TouristItinerary touristItinerary) {
         this.itinerary.add(touristItinerary);
-    }
-
-    public List<String> getFlightKeys() {
-        List<String> flightKeys = new ArrayList<>();
-        for (TouristItinerary touristItinerary : itinerary) {
-            flightKeys.add(touristItinerary.getFlight().getKey());
-        }
-        return flightKeys;
+        Collections.sort(itinerary);
     }
 
     @Override

@@ -82,17 +82,17 @@ public class Database {
     }
 
     public void printFlights() {
-        printFlights(Collections.<String>emptyList());
+        printFlights(null);
     }
 
-    public void printFlights(List<String> excludeKeys) {
+    public void printFlights(String origin) {
         StringBuilder output = new StringBuilder("FLIGHTS\n")
                 .append(tableCell("KEY"))
                 .append(tableCell("ORIGIN"))
                 .append(tableCell("DESTINATION"))
                 .append(tableCell("FLYBY")).append("\n");
         for (Flight flight : flights) {
-            if (!excludeKeys.contains(flight.getKey())) {
+            if (origin != null && origin.equals(flight.getOrigin())) {
                 output.append(tableCell(flight.getKey()))
                         .append(tableCell(flight.getOrigin()))
                         .append(tableCell(flight.getDestination()))
@@ -104,11 +104,6 @@ public class Database {
 
     private String tableCell(Object content) {
         return String.format(COLUMN_FORMAT, content);
-    }
-
-    public void print() {
-        printTourists();
-        printFlights();
     }
 
     public void printTouristItinerary(Tourist tourist) {
@@ -131,8 +126,13 @@ public class Database {
     }
 
     public void printAvailableFlights(Tourist tourist) {
-        List<String> flightKeys = tourist.getFlightKeys();
-        printFlights(flightKeys);
+        String origin;
+        if (tourist.getItinerary().isEmpty()) {
+            origin = tourist.getLocation();
+        } else {
+            origin = tourist.getLastItineraryItem().getFlight().getDestination();
+        }
+        printFlights(origin);
     }
 
     public void insertTouristItinerary(Tourist tourist, Flight flight) throws FileNotFoundException {
