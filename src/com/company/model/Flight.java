@@ -43,41 +43,20 @@ public class Flight implements Comparable<Flight> {
         return origin;
     }
 
-    public void setOrigin(String origin) {
-        this.origin = origin;
-    }
-
     public String getDestination() {
         return destination;
-    }
-
-    public void setDestination(String destination) {
-        this.destination = destination;
     }
 
     public String getFlyby() {
         return flyby;
     }
 
-    public void setFlyby(String flyby) {
-        this.flyby = flyby;
-    }
-
     public int getCapacity() {
         return capacity;
     }
 
-    public void setCapacity(int capacity) {
-        this.capacity = capacity;
-    }
-
     public List<TouristItinerary> getCustomerItineraries() {
         return customerItineraries;
-    }
-
-    public void setCustomerItineraries(
-            List<TouristItinerary> customerItineraries) {
-        this.customerItineraries = customerItineraries;
     }
 
     public void addCustomerItinerary(TouristItinerary touristItinerary) {

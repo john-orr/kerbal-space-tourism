@@ -35,10 +35,6 @@ public class Mission {
         return flight;
     }
 
-    public void setFlight(Flight flight) {
-        this.flight = flight;
-    }
-
     public String getVessel() {
         return vessel;
     }
@@ -59,11 +55,6 @@ public class Mission {
         return passengerItineraries;
     }
 
-    public void setPassengerItineraries(
-            List<TouristItinerary> passengerItineraries) {
-        this.passengerItineraries = passengerItineraries;
-    }
-
     public void addPassengerItinerary(TouristItinerary passengerItinerary) {
         this.passengerItineraries.add(passengerItinerary);
     }
@@ -77,5 +68,14 @@ public class Mission {
                 break;
             }
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o instanceof Mission) {
+            Mission that = (Mission) o;
+            return this.key.equals(that.key);
+        }
+        return false;
     }
 }

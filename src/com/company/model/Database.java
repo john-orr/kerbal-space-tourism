@@ -10,7 +10,7 @@ public class Database {
     List<Tourist> tourists;
     List<Flight> flights;
     List<Mission> missions;
-    public static final String COLUMN_FORMAT = "%-15s";
+    public static final String COLUMN_FORMAT = "%-15s| ";
 
     public Database(List<Tourist> tourists, List<Flight> flights) {
         this.tourists = tourists;
@@ -160,6 +160,10 @@ public class Database {
     }
 
     public void printMissions() {
+        if (missions.isEmpty()) {
+            System.out.println("There are no missions");
+            return;
+        }
         StringBuilder output = new StringBuilder("MISSIONS\n")
                 .append(tableCell("KEY"))
                 .append(tableCell("F.KEY"))
@@ -178,10 +182,21 @@ public class Database {
                     .append(tableCell(mission.getVessel()))
                     .append(tableCell(mission.getStatus()));
             for (TouristItinerary passengerItinerary : mission.getPassengerItineraries()) {
-                output.append(passengerItinerary.getTourist().getName()).append("\t");
+                output.append(tableCell(passengerItinerary.getTourist().getName())).append("\t");
             }
             output.append("\n");
         }
         System.out.println(output.toString());
+    }
+
+    public void removeMission(Mission mission) {
+        this.missions.remove(mission);
+    }
+
+    public void removeItineraries(List<TouristItinerary> touristItineraries) {
+        for (TouristItinerary touristItinerary : touristItineraries) {
+            touristItinerary.getTourist().removeFromItinerary(touristItinerary);
+            touristItinerary.getTourist().setLocation(touristItinerary.getFlight().getDestination());
+        }
     }
 }

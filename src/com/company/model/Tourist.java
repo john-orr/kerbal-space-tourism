@@ -24,15 +24,12 @@ public class Tourist {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public String getLocation() {
         return location;
     }
 
     public void setLocation(String location) {
+        System.out.println(name + " location is now " + location);
         this.location = location;
     }
 
@@ -48,10 +45,6 @@ public class Tourist {
         return itinerary.get(0);
     }
 
-    public void setItinerary(List<TouristItinerary> itinerary) {
-        this.itinerary = itinerary;
-    }
-
     public void addToItinerary(Flight flight) {
         TouristItinerary touristItinerary = new TouristItinerary(this, flight, this.itinerary.size());
         addToItinerary(touristItinerary);
@@ -61,6 +54,10 @@ public class Tourist {
     public void addToItinerary(TouristItinerary touristItinerary) {
         this.itinerary.add(touristItinerary);
         Collections.sort(itinerary);
+    }
+
+    public void removeFromItinerary(TouristItinerary touristItinerary) {
+        this.itinerary.remove(touristItinerary);
     }
 
     @Override

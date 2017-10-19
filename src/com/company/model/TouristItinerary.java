@@ -22,24 +22,12 @@ public class TouristItinerary implements Comparable<TouristItinerary> {
         return tourist;
     }
 
-    public void setTourist(Tourist tourist) {
-        this.tourist = tourist;
-    }
-
     public Flight getFlight() {
         return flight;
     }
 
-    public void setFlight(Flight flight) {
-        this.flight = flight;
-    }
-
     public int getPriority() {
         return priority;
-    }
-
-    public void setPriority(int priority) {
-        this.priority = priority;
     }
 
     public Mission getMission() {

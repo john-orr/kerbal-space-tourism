@@ -47,6 +47,27 @@ public class Main {
 
     private static void updateMissionStatus() {
         database.printMissions();
+        Mission mission;
+        do {
+            System.out.println("Please select a mission");
+            String missionKey = input.nextLine();
+            if (missionKey.equals("c")) {
+                System.out.println("Update mission cancelled");
+                return;
+            }
+            mission = database.findMission(missionKey);
+        } while (mission == null);
+        String status;
+        do {
+            System.out.println("Please enter the new status");
+            status = input.nextLine().toUpperCase();
+        } while (!(status.equals("ACTIVE") || status.equals("COMPLETED")));
+        if (status.equals("ACTIVE")) {
+            mission.setStatus(status);
+        } else {
+            database.removeMission(mission);
+            database.removeItineraries(mission.getPassengerItineraries());
+        }
     }
 
     private static void createMissions() {
