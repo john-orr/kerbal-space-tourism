@@ -43,9 +43,10 @@ public class Persister {
 
     private static void writeFlights(List<Flight> flights) throws FileNotFoundException {
         PrintWriter writer = new PrintWriter(new File("database/flights.csv"));
-        writer.println("H,KEY,ORIGIN,DESTINATION");
+        writer.println("H,KEY,ORIGIN,DESTINATION,FLYBY");
         for (Flight flight : flights) {
-            writer.println("D," + flight.getKey() + "," + flight.getOrigin() + "," + flight.getDestination());
+            writer.println("D," + flight.getKey() + "," + flight.getOrigin() + "," + flight
+                    .getDestination() + "," + flight.getFlyby());
         }
         writer.close();
     }

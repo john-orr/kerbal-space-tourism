@@ -11,7 +11,6 @@ public class Tourist {
     private String location;
     Map<Integer, Flight> itinerary = new TreeMap<>();
 
-
     public Tourist(String name) {
         this.name = name.toUpperCase();
         this.location = "KERBIN";
@@ -65,5 +64,14 @@ public class Tourist {
             flightKeys.add(flight.getKey());
         }
         return flightKeys;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o instanceof Tourist) {
+            Tourist that = (Tourist) o;
+            return this.name.equals(that.name);
+        }
+        return false;
     }
 }

@@ -72,7 +72,7 @@ public class Retriever {
         List<Flight> flights = new ArrayList<>();
         while ((line = reader.readLine()) != null) {
             try {
-                String[] data = line.split(",", 4);
+                String[] data = line.split(",", 5);
                 if (data[0].equals("H")){
                     continue;
                 }

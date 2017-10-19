@@ -92,7 +92,9 @@ public class Main {
         String origin = input.nextLine();
         System.out.println("Please enter the destination of the new flight");
         String destination = input.nextLine();
-        database.insertFlight(new Flight(origin, destination));
+        System.out.println("Enter any flyby events on this flight");
+        String flyby = input.nextLine();
+        database.insertFlight(new Flight(origin, destination, flyby));
     }
 
     private static void viewTourists() {

@@ -32,6 +32,10 @@ public class Database {
     }
 
     public void insertTourist(Tourist tourist) throws FileNotFoundException {
+        if (this.tourists.contains(tourist)) {
+            System.out.println("Tourist already exists");
+            return;
+        }
         this.tourists.add(tourist);
         Persister.write(this);
     }
@@ -61,6 +65,10 @@ public class Database {
     }
 
     public void insertFlight(Flight newFlight) throws FileNotFoundException {
+        if (this.flights.contains(newFlight)) {
+            System.out.println("Flight already exists");
+            return;
+        }
         int keyGen = 0;
         for (Flight flight : flights) {
             int flightKey = Integer.parseInt(flight.getKey());
@@ -81,12 +89,14 @@ public class Database {
         StringBuilder output = new StringBuilder("FLIGHTS\n")
                 .append(tableCell("KEY"))
                 .append(tableCell("ORIGIN"))
-                .append(tableCell("DESTINATION")).append("\n");
+                .append(tableCell("DESTINATION"))
+                .append(tableCell("FLYBY")).append("\n");
         for (Flight flight : flights) {
             if (!excludeKeys.contains(flight.getKey())) {
                 output.append(tableCell(flight.getKey()))
                         .append(tableCell(flight.getOrigin()))
-                        .append(tableCell(flight.getDestination())).append("\n");
+                        .append(tableCell(flight.getDestination()))
+                        .append(tableCell(flight.getFlyby())).append("\n");
             }
         }
         System.out.println(output.toString());
@@ -107,12 +117,14 @@ public class Database {
                 .append(tableCell("F.KEY"))
                 .append(tableCell("ORIGIN"))
                 .append(tableCell("DESTINATION"))
+                .append(tableCell("FLYBY"))
                 .append(tableCell("PRIORITY")).append("\n");
         for (Map.Entry<Integer, Flight> flight : tourist.getItinerary().entrySet()) {
             output.append(tableCell(tourist.getName()))
                     .append(tableCell(flight.getValue().getKey()))
                     .append(tableCell(flight.getValue().getOrigin()))
                     .append(tableCell(flight.getValue().getDestination()))
+                    .append(tableCell(flight.getValue().getFlyby()))
                     .append(tableCell(flight.getKey())).append("\n");
         }
         System.out.println(output.toString());
