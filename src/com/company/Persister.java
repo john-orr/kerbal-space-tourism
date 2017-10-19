@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.util.List;
+import java.util.Map;
 
 public class Persister {
 
@@ -20,10 +21,12 @@ public class Persister {
 
     private static void writeTouristItinerary(List<Tourist> tourists) throws FileNotFoundException {
         PrintWriter writer = new PrintWriter(new File("database/tourist_itinerary.csv"));
-        writer.println("H,TOURIST,FLIGHT");
+        writer.println("H,TOURIST,FLIGHT,PRIORITY");
         for (Tourist tourist : tourists) {
-            for (Flight flight : tourist.getItinerary()) {
-                writer.println("D," + tourist.getName() + "," + flight.getKey());
+            for (Map.Entry<Integer, Flight> flight : tourist.getItinerary().entrySet()) {
+                Integer priority = flight.getKey();
+                String flightKey = flight.getValue().getKey();
+                writer.println("D," + tourist.getName() + "," + flightKey + "," + priority);
             }
         }
         writer.close();

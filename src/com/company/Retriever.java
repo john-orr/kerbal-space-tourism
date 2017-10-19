@@ -24,7 +24,7 @@ public class Retriever {
         for (TouristItinerary touristItinerary : touristItineraries) {
             Tourist tourist = database.findTourist(touristItinerary.getTourist());
             Flight flight = database.findFlight(touristItinerary.getFlight());
-            tourist.addToItinerary(flight);
+            tourist.addToItinerary(touristItinerary.getPriority(), flight);
         }
     }
 
@@ -34,7 +34,7 @@ public class Retriever {
         List<TouristItinerary> touristItineraries = new ArrayList<>();
         while ((line = reader.readLine()) != null) {
             try {
-                String[] data = line.split(",", 3);
+                String[] data = line.split(",", 4);
                 if (data[0].equals("H")) {
                     continue;
                 }

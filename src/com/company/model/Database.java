@@ -5,6 +5,7 @@ import com.company.Persister;
 import java.io.FileNotFoundException;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 public class Database {
 
@@ -91,7 +92,7 @@ public class Database {
         System.out.println(output.toString());
     }
 
-    private String tableCell(String content) {
+    private String tableCell(Object content) {
         return String.format(COLUMN_FORMAT, content);
     }
 
@@ -104,13 +105,15 @@ public class Database {
         StringBuilder output = new StringBuilder("ITINERARY\n")
                 .append(tableCell("NAME"))
                 .append(tableCell("F.KEY"))
-                .append(tableCell("F.ORIGIN"))
-                .append(tableCell("F.DESTINATION")).append("\n");
-        for (Flight flight : tourist.getItinerary()) {
+                .append(tableCell("ORIGIN"))
+                .append(tableCell("DESTINATION"))
+                .append(tableCell("PRIORITY")).append("\n");
+        for (Map.Entry<Integer, Flight> flight : tourist.getItinerary().entrySet()) {
             output.append(tableCell(tourist.getName()))
-                    .append(tableCell(flight.getKey()))
-                    .append(tableCell(flight.getOrigin()))
-                    .append(tableCell(flight.getDestination())).append("\n");
+                    .append(tableCell(flight.getValue().getKey()))
+                    .append(tableCell(flight.getValue().getOrigin()))
+                    .append(tableCell(flight.getValue().getDestination()))
+                    .append(tableCell(flight.getKey())).append("\n");
         }
         System.out.println(output.toString());
     }
