@@ -9,14 +9,16 @@ public class Flight implements Comparable<Flight> {
     private String origin;
     private String destination;
     private String flyby;
+    private int capacity;
     private List<TouristItinerary> customerItineraries = new ArrayList<>();
 
-    public Flight(String origin, String destination, String flyby) {
+    public Flight(String origin, String destination, String flyby, int capactiy) {
         this.origin = origin.toUpperCase();
         this.destination = destination.toUpperCase();
         if (!flyby.isEmpty()) {
             this.flyby = flyby.toUpperCase();
         }
+        this.capacity = capactiy;
     }
 
     public Flight(String[] data) {
@@ -26,6 +28,7 @@ public class Flight implements Comparable<Flight> {
         if (!data[4].equals("null")) {
             this.flyby = data[4];
         }
+        this.capacity = Integer.parseInt(data[5]);
     }
 
     public String getKey() {
@@ -58,6 +61,14 @@ public class Flight implements Comparable<Flight> {
 
     public void setFlyby(String flyby) {
         this.flyby = flyby;
+    }
+
+    public int getCapacity() {
+        return capacity;
+    }
+
+    public void setCapacity(int capacity) {
+        this.capacity = capacity;
     }
 
     public List<TouristItinerary> getCustomerItineraries() {

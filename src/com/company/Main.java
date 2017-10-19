@@ -1,8 +1,6 @@
 package com.company;
 
-import com.company.model.Database;
-import com.company.model.Flight;
-import com.company.model.Tourist;
+import com.company.model.*;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -33,6 +31,8 @@ public class Main {
                 viewFlights();
             } else if (choice == TOURIST_ITINERARY) {
                 touristItinerary();
+            } else if (choice == CREATE_MISSIONS) {
+                createMissions();
             }
 
             do {
@@ -40,6 +40,77 @@ public class Main {
                 repeat = input.nextLine();
             } while (!(repeat.equals("y") || repeat.equals("n")));
         } while (repeat.equals("y"));
+        Persister.write(database);
+    }
+
+    private static void createMissions() {
+        int numFlightsReady = 0;
+        for (Flight flight : database.getFlights()) {
+            Mission mission = new Mission(flight);
+            for (TouristItinerary customerItinerary : flight.getCustomerItineraries()) {
+                if (customerItinerary.getMission() == null && customerItinerary.equals(
+                        customerItinerary.getTourist().getNextItineraryItem())) {
+                    mission.addPassenger(customerItinerary.getTourist());
+                    mission.addPassengerItinerary(customerItinerary);
+                }
+            }
+            if (mission.getPassengers().size() >= flight.getCapacity()) {
+                numFlightsReady++;
+                StringBuilder output =
+                        new StringBuilder("Flight ").append(flight.getKey()).append(" from ")
+                                .append(flight.getOrigin()).append(" to ")
+                                .append(flight.getDestination())
+                                .append(" is ready to go with passengers: ");
+                for (Tourist passenger : mission.getPassengers()) {
+                    output.append(passenger.getName()).append("\t");
+                }
+                System.out.println(output.toString());
+                String createMission;
+                do {
+                    System.out.println("Would you like to create the mission? [y/n]");
+                    createMission = input.nextLine();
+                } while (!(createMission.equals("y") || createMission.equals("n")));
+                if (createMission.equals("y")) {
+                    boolean showItineraries = false;
+                    while (mission.getPassengers().size() > flight.getCapacity()) {
+                        if (showItineraries) {
+                            for (Tourist passenger : mission.getPassengers()) {
+                                database.printTouristItinerary(passenger);
+                            }
+                        }
+                        System.out.println("Who should be left behind?");
+                        for (Tourist passenger : mission.getPassengers()) {
+                            System.out.println(passenger.getName());
+                        }
+                        if (!showItineraries) {
+                            System.out.println("Enter i if you want to see their itineraries");
+                        }
+                        String name = input.nextLine();
+                        showItineraries = false;
+                        if (name.equals("i")) {
+                            showItineraries = true;
+                        } else {
+                            mission.getPassengers().remove(new Tourist(name));
+                        }
+                    }
+                    mission.setStatus("READY");
+                    for (TouristItinerary touristItinerary : mission.getPassengerItineraries()) {
+                        touristItinerary.setMission(mission);
+                    }
+                    System.out.println("Enter vessel name");
+                    String vessel = input.nextLine();
+                    if (vessel.equals("c")) {
+                        System.out.println("Mission creation cancelled");
+                        continue;
+                    }
+                    mission.setVessel(vessel.toUpperCase());
+                    database.insertMission(mission);
+                }
+            }
+        }
+        if (numFlightsReady == 0) {
+            System.out.println("No flights are ready to go");
+        }
     }
 
     private static void touristItinerary() throws FileNotFoundException {
@@ -78,7 +149,7 @@ public class Main {
                 if (flight == null) {
                     break;
                 }
-                database.insertTouristItinerary(tourist, flight);
+                tourist.addToItinerary(flight);
                 database.printTouristItinerary(tourist);
                 do {
                     System.out.println("Add another flight? [y/n]");
@@ -112,7 +183,15 @@ public class Main {
         if (flyby.equals("c")) {
             return;
         }
-        database.insertFlight(new Flight(origin, destination, flyby));
+        String capacity;
+        do {
+            System.out.println("Please enter the capacity of the new flight");
+            capacity = input.nextLine();
+            if (capacity.equals("c")) {
+                return;
+            }
+        } while (!capacity.matches("^\\d+$"));
+        database.insertFlight(new Flight(origin, destination, flyby, Integer.parseInt(capacity)));
     }
 
     private static void viewTourists() {

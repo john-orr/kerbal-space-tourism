@@ -1,15 +1,11 @@
 package com.company;
 
-import com.company.model.Database;
-import com.company.model.Flight;
-import com.company.model.Tourist;
-import com.company.model.TouristItinerary;
+import com.company.model.*;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.util.List;
-import java.util.Map;
 
 public class Persister {
 
@@ -17,6 +13,19 @@ public class Persister {
         writeTourists(database.getTourists());
         writeFlights(database.getFlights());
         writeTouristItinerary(database.getTourists());
+        writeMissions(database.getMissions());
+    }
+
+    private static void writeMissions(List<Mission> missions) throws FileNotFoundException {
+        PrintWriter writer = new PrintWriter(new File("database/missions.csv"));
+        writer.println("H,KEY,FLIGHT_KEY,VESSEL,STATUS");
+        for (Mission mission : missions) {
+            writer.println(
+                    "D," + mission.getKey() + "," + mission.getFlight().getKey() + "," + mission
+                            .getVessel() + "," + mission.getStatus());
+        }
+        writer.flush();
+        writer.close();
     }
 
     private static void writeTouristItinerary(List<Tourist> tourists) throws FileNotFoundException {
@@ -24,11 +33,20 @@ public class Persister {
         writer.println("H,TOURIST,FLIGHT,PRIORITY,MISSION_KEY");
         for (Tourist tourist : tourists) {
             for (TouristItinerary touristItinerary : tourist.getItinerary()) {
-                writer.println("D," + tourist.getName() + "," + touristItinerary.getFlight()
-                        .getKey() + "," + touristItinerary.getPriority() + "," + touristItinerary
-                        .getMissionKey());
+                StringBuilder itineraryRecord = new StringBuilder()
+                        .append("D,").append(tourist.getName())
+                        .append(",").append(touristItinerary.getFlight().getKey())
+                        .append(",").append(touristItinerary.getPriority())
+                        .append(",");
+                if (touristItinerary.getMission() != null) {
+                    itineraryRecord.append(touristItinerary.getMission().getKey());
+                } else {
+                    itineraryRecord.append("null");
+                }
+                writer.println(itineraryRecord.toString());
             }
         }
+        writer.flush();
         writer.close();
     }
 
@@ -38,16 +56,18 @@ public class Persister {
         for (Tourist tourist : tourists) {
             writer.println("D," + tourist.getName() + "," + tourist.getLocation());
         }
+        writer.flush();
         writer.close();
     }
 
     private static void writeFlights(List<Flight> flights) throws FileNotFoundException {
         PrintWriter writer = new PrintWriter(new File("database/flights.csv"));
-        writer.println("H,KEY,ORIGIN,DESTINATION,FLYBY");
+        writer.println("H,KEY,ORIGIN,DESTINATION,FLYBY,CAPACITY");
         for (Flight flight : flights) {
             writer.println("D," + flight.getKey() + "," + flight.getOrigin() + "," + flight
-                    .getDestination() + "," + flight.getFlyby());
+                    .getDestination() + "," + flight.getFlyby() + "," + flight.getCapacity());
         }
+        writer.flush();
         writer.close();
     }
 }

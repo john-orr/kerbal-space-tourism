@@ -6,7 +6,8 @@ public enum MenuOption {
     VIEW_TOURISTS(2, "View Tourists"),
     ADD_NEW_FLIGHT(3, "Add New Flight"),
     VIEW_FLIGHTS(4, "View Flights"),
-    TOURIST_ITINERARY(5, "Tourist Itinerary");
+    TOURIST_ITINERARY(5, "Tourist Itinerary"),
+    CREATE_MISSIONS(6, "Create Missions");
 
     int id;
     String text;

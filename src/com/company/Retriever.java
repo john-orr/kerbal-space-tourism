@@ -1,9 +1,6 @@
 package com.company;
 
-import com.company.model.Database;
-import com.company.model.Flight;
-import com.company.model.Tourist;
-import com.company.model.TouristItinerary;
+import com.company.model.*;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -20,8 +17,28 @@ public class Retriever {
         List<Flight> flights = readFlights();
         Collections.sort(flights);
         Database database = new Database(tourists, flights);
+        buildMissions(database);
         buildItinerary(database);
         return database;
+    }
+
+    private static void buildMissions(Database database) throws IOException {
+        BufferedReader reader = new BufferedReader(new FileReader(new File("database/missions.csv")));
+        String line;
+        while ((line = reader.readLine()) != null) {
+            try {
+                String[] data = line.split(",");
+                if (data[0].equals("H")) {
+                    continue;
+                }
+                Flight flight = database.findFlight(data[2]);
+                Mission mission = new Mission(data, flight);
+                database.getMissions().add(mission);
+            } catch (Exception e) {
+                System.out.println("Error reading line " + line);
+                throw e;
+            }
+        }
     }
 
     private static void buildItinerary(Database database) throws IOException {
@@ -29,7 +46,7 @@ public class Retriever {
         String line;
         while ((line = reader.readLine()) != null) {
             try {
-                String[] data = line.split(",", 5);
+                String[] data = line.split(",");
                 if (data[0].equals("H")) {
                     continue;
                 }
@@ -37,9 +54,18 @@ public class Retriever {
                 Flight flight = database.findFlight(data[2]);
                 int priority = Integer.parseInt(data[3]);
                 String missionKey = data[4];
-                TouristItinerary touristItinerary = new TouristItinerary(tourist, flight, priority, missionKey);
+                Mission mission = null;
+                if (!missionKey.equals("null")) {
+                    mission = database.findMission(missionKey);
+                }
+                TouristItinerary touristItinerary =
+                        new TouristItinerary(tourist, flight, priority, mission);
                 tourist.addToItinerary(touristItinerary);
                 flight.addCustomerItinerary(touristItinerary);
+                if (mission != null) {
+                    mission.addPassengerItinerary(touristItinerary);
+                    mission.addPassenger(tourist);
+                }
             } catch (Exception e) {
                 System.out.println("Error reading line " + line);
                 throw e;
@@ -53,7 +79,7 @@ public class Retriever {
         List<Tourist> tourists = new ArrayList<>();
         while ((line = reader.readLine()) != null) {
             try {
-                String[] data = line.split(",", 3);
+                String[] data = line.split(",");
                 if (data[0].equals("H")) {
                     continue;
                 }
@@ -72,7 +98,7 @@ public class Retriever {
         List<Flight> flights = new ArrayList<>();
         while ((line = reader.readLine()) != null) {
             try {
-                String[] data = line.split(",", 5);
+                String[] data = line.split(",");
                 if (data[0].equals("H")){
                     continue;
                 }

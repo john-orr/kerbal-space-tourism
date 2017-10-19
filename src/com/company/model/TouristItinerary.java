@@ -5,20 +5,17 @@ public class TouristItinerary implements Comparable<TouristItinerary> {
     private Tourist tourist;
     private Flight flight;
     private int priority;
-    private String missionKey;
+    private Mission mission;
 
-    public TouristItinerary(Tourist tourist, Flight flight, int priority,
-            String missionKey) {
+    public TouristItinerary(Tourist tourist, Flight flight, int priority, Mission mission) {
         this.tourist = tourist;
         this.flight = flight;
         this.priority = priority;
-        if (!missionKey.equals("null")) {
-            this.missionKey = missionKey;
-        }
+        this.mission = mission;
     }
 
     public TouristItinerary(Tourist tourist, Flight flight, int size) {
-        this(tourist, flight, size, "null");
+        this(tourist, flight, size, null);
     }
 
     public Tourist getTourist() {
@@ -45,12 +42,21 @@ public class TouristItinerary implements Comparable<TouristItinerary> {
         this.priority = priority;
     }
 
-    public String getMissionKey() {
-        return missionKey;
+    public Mission getMission() {
+        return mission;
     }
 
-    public void setMissionKey(String missionKey) {
-        this.missionKey = missionKey;
+    public void setMission(Mission mission) {
+        this.mission = mission;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o instanceof TouristItinerary) {
+            TouristItinerary that = (TouristItinerary) o;
+            return this.tourist.equals(that.tourist) && this.flight.equals(that.flight) && this.priority == that.priority;
+        }
+        return false;
     }
 
     @Override public int compareTo(TouristItinerary that) {

@@ -1,21 +1,21 @@
 package com.company.model;
 
-import com.company.Persister;
-
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 public class Database {
 
     List<Tourist> tourists;
     List<Flight> flights;
+    List<Mission> missions;
     public static final String COLUMN_FORMAT = "%-15s";
 
     public Database(List<Tourist> tourists, List<Flight> flights) {
         this.tourists = tourists;
         this.flights = flights;
+        this.missions = new ArrayList<>();
     }
 
     public List<Tourist> getTourists() {
@@ -37,7 +37,6 @@ public class Database {
             return;
         }
         this.tourists.add(tourist);
-        Persister.write(this);
     }
 
     public void printTourists() {
@@ -72,13 +71,13 @@ public class Database {
         int keyGen = 0;
         for (Flight flight : flights) {
             int flightKey = Integer.parseInt(flight.getKey());
-            if (Integer.parseInt(flight.getKey()) > keyGen) {
+            if (flightKey > keyGen) {
                 keyGen = flightKey;
             }
         }
         newFlight.setKey(String.format("%03d", keyGen + 1));
         this.flights.add(newFlight);
-        Persister.write(this);
+        Collections.sort(flights);
     }
 
     public void printFlights() {
@@ -92,7 +91,7 @@ public class Database {
                 .append(tableCell("DESTINATION"))
                 .append(tableCell("FLYBY")).append("\n");
         for (Flight flight : flights) {
-            if (origin != null && origin.equals(flight.getOrigin())) {
+            if (origin == null || origin.equals(flight.getOrigin())) {
                 output.append(tableCell(flight.getKey()))
                         .append(tableCell(flight.getOrigin()))
                         .append(tableCell(flight.getDestination()))
@@ -135,8 +134,28 @@ public class Database {
         printFlights(origin);
     }
 
-    public void insertTouristItinerary(Tourist tourist, Flight flight) throws FileNotFoundException {
-        tourist.addToItinerary(flight);
-        Persister.write(this);
+    public Mission findMission(String missionKey) {
+        for (Mission mission : missions) {
+            if (mission.getKey().equals(missionKey)) {
+                return mission;
+            }
+        }
+        return null;
+    }
+
+    public List<Mission> getMissions() {
+        return missions;
+    }
+
+    public void insertMission(Mission newMission) {
+        int keyGen = 0;
+        for (Mission mission : missions) {
+            int missionKey = Integer.parseInt(mission.getKey());
+            if (missionKey > keyGen) {
+                keyGen = missionKey;
+            }
+        }
+        newMission.setKey(String.format("%03d", keyGen + 1));
+        this.missions.add(newMission);
     }
 }

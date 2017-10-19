@@ -44,6 +44,10 @@ public class Tourist {
         return itinerary.get(itinerary.size() - 1);
     }
 
+    public TouristItinerary getNextItineraryItem() {
+        return itinerary.get(0);
+    }
+
     public void setItinerary(List<TouristItinerary> itinerary) {
         this.itinerary = itinerary;
     }
