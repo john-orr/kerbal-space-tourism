@@ -189,14 +189,18 @@ public class Database {
         System.out.println(output.toString());
     }
 
-    public void removeMission(Mission mission) {
+    public void completeMission(Mission mission) {
         this.missions.remove(mission);
+        removeItineraries(mission.getPassengerItineraries());
+        mission.deletePassengerItineraries();
     }
 
     public void removeItineraries(List<TouristItinerary> touristItineraries) {
         for (TouristItinerary touristItinerary : touristItineraries) {
             touristItinerary.getTourist().removeFromItinerary(touristItinerary);
             touristItinerary.getTourist().setLocation(touristItinerary.getFlight().getDestination());
+            touristItinerary.getFlight().removeCustomerItinerary(touristItinerary);
+            touristItinerary.setMission(null);
         }
     }
 }

@@ -65,8 +65,7 @@ public class Main {
         if (status.equals("ACTIVE")) {
             mission.setStatus(status);
         } else {
-            database.removeMission(mission);
-            database.removeItineraries(mission.getPassengerItineraries());
+            database.completeMission(mission);
         }
     }
 

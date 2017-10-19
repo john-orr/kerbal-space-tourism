@@ -63,6 +63,10 @@ public class Flight implements Comparable<Flight> {
         this.customerItineraries.add(touristItinerary);
     }
 
+    public void removeCustomerItinerary(TouristItinerary touristItinerary) {
+        this.customerItineraries.remove(touristItinerary);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o instanceof Flight) {

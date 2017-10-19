@@ -70,6 +70,10 @@ public class Mission {
         }
     }
 
+    public void deletePassengerItineraries() {
+        this.passengerItineraries = null;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o instanceof Mission) {
