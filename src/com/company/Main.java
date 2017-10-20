@@ -250,6 +250,10 @@ public class Main {
                         System.out.println("Please enter the key of the prerequisite itinerary (n if none)");
                         itineraryKey = input.nextLine();
                         prerequisite = tourist.findItinerary(itineraryKey);
+                        if (prerequisite == null || !flight.getOrigin().equals(prerequisite.getFlight().getDestination())) {
+                            System.out.println("Seems like an invalid prerequisite");
+                            prerequisite = null;
+                        }
                     } while (prerequisite == null && !itineraryKey.equals("n"));
                 }
                 database.insertItinerary(tourist, flight, prerequisite);
