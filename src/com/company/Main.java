@@ -15,7 +15,6 @@ public class Main {
 
     public static void main(String[] args) throws IOException {
         init();
-        String repeat;
         do {
             MenuOption choice = menu();
             System.out.println("Operation '" + choice.getText() + "' selected");
@@ -36,12 +35,7 @@ public class Main {
             } else if (choice == UPDATE_MISSION_STATUS) {
                 updateMissionStatus();
             }
-
-            do {
-                System.out.println("Perform another operation? [y/n]");
-                repeat = input.nextLine();
-            } while (!(repeat.equals("y") || repeat.equals("n")));
-        } while (repeat.equals("y"));
+        } while (true);
         Persister.write(database);
     }
 
