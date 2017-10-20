@@ -199,7 +199,7 @@ public class Database {
                 .append(tableCell("FLYBY"))
                 .append(tableCell("VESSEL"))
                 .append(tableCell("STATUS"))
-                .append(tableCell("PASSENGERS")).append("\n");
+                .append("PASSENGERS").append("\n");
         for (Mission mission : missions) {
             output.append(tableCell(mission.getKey()))
                     .append(tableCell(mission.getFlight().getKey()))
@@ -209,7 +209,7 @@ public class Database {
                     .append(tableCell(mission.getVessel()))
                     .append(tableCell(mission.getStatus()));
             for (TouristItinerary passengerItinerary : mission.getPassengerItineraries()) {
-                output.append(tableCell(passengerItinerary.getTourist().getName())).append("\t");
+                output.append(passengerItinerary.getTourist().getName()).append("\t");
             }
             output.append("\n");
         }
