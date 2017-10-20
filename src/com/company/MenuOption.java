@@ -8,7 +8,8 @@ public enum MenuOption {
     VIEW_FLIGHTS(4, "View Flights"),
     TOURIST_ITINERARY(5, "Tourist Itinerary"),
     CREATE_MISSIONS(6, "Create Missions"),
-    UPDATE_MISSION_STATUS(7, "Update Mission Status");
+    VIEW_MISSIONS(7, "View Missions"),
+    UPDATE_MISSION_STATUS(8, "Update Mission Status");
 
     int id;
     String text;

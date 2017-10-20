@@ -32,6 +32,8 @@ public class Main {
                 touristItinerary();
             } else if (choice == CREATE_MISSIONS) {
                 createMissions();
+            } else if (choice == VIEW_MISSIONS) {
+                viewMissions();
             } else if (choice == UPDATE_MISSION_STATUS) {
                 updateMissionStatus();
             }
@@ -75,6 +77,10 @@ public class Main {
                 }
             }
         }
+    }
+
+    private static void viewMissions() {
+        database.printMissions();
     }
 
     private static void createMissions() {
