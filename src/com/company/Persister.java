@@ -30,14 +30,20 @@ public class Persister {
 
     private static void writeTouristItinerary(List<Tourist> tourists) throws FileNotFoundException {
         PrintWriter writer = new PrintWriter(new File("database/tourist_itinerary.csv"));
-        writer.println("H,TOURIST,FLIGHT,PRIORITY,MISSION_KEY");
+        writer.println("H,KEY,TOURIST,FLIGHT,PREREQUISITE,MISSION_KEY");
         for (Tourist tourist : tourists) {
             for (TouristItinerary touristItinerary : tourist.getItinerary()) {
                 StringBuilder itineraryRecord = new StringBuilder()
-                        .append("D,").append(tourist.getName())
+                        .append("D,").append(touristItinerary.getKey())
+                        .append(",").append(tourist.getName())
                         .append(",").append(touristItinerary.getFlight().getKey())
-                        .append(",").append(touristItinerary.getPriority())
                         .append(",");
+                if (touristItinerary.getPrerequisite() != null) {
+                    itineraryRecord.append(touristItinerary.getPrerequisite().getKey());
+                } else {
+                    itineraryRecord.append("null");
+                }
+                itineraryRecord.append(",");
                 if (touristItinerary.getMission() != null) {
                     itineraryRecord.append(touristItinerary.getMission().getKey());
                 } else {

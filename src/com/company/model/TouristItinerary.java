@@ -1,21 +1,31 @@
 package com.company.model;
 
-public class TouristItinerary implements Comparable<TouristItinerary> {
+public class TouristItinerary extends Entity {
 
+    private String key;
     private Tourist tourist;
     private Flight flight;
-    private int priority;
+    private TouristItinerary prerequisite;
     private Mission mission;
 
-    public TouristItinerary(Tourist tourist, Flight flight, int priority, Mission mission) {
+    public TouristItinerary(String key, Tourist tourist, Flight flight, Mission mission, TouristItinerary prerequisite) {
+        this.key = key;
         this.tourist = tourist;
         this.flight = flight;
-        this.priority = priority;
         this.mission = mission;
+        this.prerequisite = prerequisite;
     }
 
-    public TouristItinerary(Tourist tourist, Flight flight, int size) {
-        this(tourist, flight, size, null);
+    public TouristItinerary(String key, Tourist tourist, Flight flight, Mission mission) {
+        this(key, tourist, flight, mission, null);
+    }
+
+    public TouristItinerary(String key, Tourist tourist, Flight flight, TouristItinerary prerequisite) {
+        this(key, tourist, flight, null, prerequisite);
+    }
+
+    public String getKey() {
+        return key;
     }
 
     public Tourist getTourist() {
@@ -26,8 +36,12 @@ public class TouristItinerary implements Comparable<TouristItinerary> {
         return flight;
     }
 
-    public int getPriority() {
-        return priority;
+    public TouristItinerary getPrerequisite() {
+        return prerequisite;
+    }
+
+    public void setPrerequisite(TouristItinerary prerequisite) {
+        this.prerequisite = prerequisite;
     }
 
     public Mission getMission() {
@@ -42,12 +56,8 @@ public class TouristItinerary implements Comparable<TouristItinerary> {
     public boolean equals(Object o) {
         if (o instanceof TouristItinerary) {
             TouristItinerary that = (TouristItinerary) o;
-            return this.tourist.equals(that.tourist) && this.flight.equals(that.flight) && this.priority == that.priority;
+            return this.key.equals(that.key);
         }
         return false;
-    }
-
-    @Override public int compareTo(TouristItinerary that) {
-        return this.priority - that.priority;
     }
 }

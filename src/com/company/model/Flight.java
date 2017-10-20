@@ -3,7 +3,7 @@ package com.company.model;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Flight implements Comparable<Flight> {
+public class Flight extends Entity implements Comparable<Flight> {
 
     private String key;
     private String origin;

@@ -81,8 +81,8 @@ public class Main {
         for (Flight flight : database.getFlights()) {
             Mission mission = new Mission(flight);
             for (TouristItinerary customerItinerary : flight.getCustomerItineraries()) {
-                if (customerItinerary.getMission() == null && customerItinerary.equals(
-                        customerItinerary.getTourist().getNextItineraryItem())) {
+                if (customerItinerary.getMission() == null && customerItinerary.getPrerequisite() == null
+                        && customerItinerary.getTourist().getLocation().equals(customerItinerary.getFlight().getOrigin())) {
                     mission.addPassengerItinerary(customerItinerary);
                 }
             }
@@ -135,9 +135,6 @@ public class Main {
                         }
                     }
                     mission.setStatus("READY");
-                    for (TouristItinerary touristItinerary : mission.getPassengerItineraries()) {
-                        touristItinerary.setMission(mission);
-                    }
                     System.out.println("Enter vessel name");
                     String vessel = input.nextLine();
                     if (vessel.equals("c")) {
@@ -145,6 +142,10 @@ public class Main {
                         continue;
                     }
                     mission.setVessel(vessel.toUpperCase());
+                    for (TouristItinerary touristItinerary : mission.getPassengerItineraries()) {
+                        touristItinerary.setMission(mission);
+                        touristItinerary.getTourist().setLocation(mission.getVessel());
+                    }
                     database.insertMission(mission);
                 }
             }
@@ -194,7 +195,17 @@ public class Main {
                 if (flight == null) {
                     break;
                 }
-                tourist.addToItinerary(flight);
+                TouristItinerary prerequisite = null;
+                if (!tourist.getItinerary().isEmpty()) {
+                    database.printTouristItinerary(tourist);
+                    String itineraryKey;
+                    do {
+                        System.out.println("Please enter the key of the prerequisite itinerary (n if none)");
+                        itineraryKey = input.nextLine();
+                        prerequisite = tourist.findItinerary(itineraryKey);
+                    } while (prerequisite == null && !itineraryKey.equals("n"));
+                }
+                database.insertItinerary(tourist, flight, prerequisite);
                 database.printTouristItinerary(tourist);
                 do {
                     System.out.println("Add another flight? [y/n]");

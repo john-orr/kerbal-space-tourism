@@ -6,9 +6,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 public class Retriever {
 
@@ -44,31 +42,42 @@ public class Retriever {
     private static void buildItinerary(Database database) throws IOException {
         BufferedReader reader = new BufferedReader(new FileReader(new File("database/tourist_itinerary.csv")));
         String line;
+        Map<String, TouristItinerary> itineraryMap = new HashMap<>();
+        Map<String, String> prerequisiteMap = new HashMap<>();
         while ((line = reader.readLine()) != null) {
             try {
                 String[] data = line.split(",");
                 if (data[0].equals("H")) {
                     continue;
                 }
-                Tourist tourist = database.findTourist(data[1]);
-                Flight flight = database.findFlight(data[2]);
-                int priority = Integer.parseInt(data[3]);
-                String missionKey = data[4];
+                String key = data[1];
+                Tourist tourist = database.findTourist(data[2]);
+                Flight flight = database.findFlight(data[3]);
+                String prerequisite = data[4];
+                String missionKey = data[5];
                 Mission mission = null;
                 if (!missionKey.equals("null")) {
                     mission = database.findMission(missionKey);
                 }
-                TouristItinerary touristItinerary =
-                        new TouristItinerary(tourist, flight, priority, mission);
+                TouristItinerary touristItinerary = new TouristItinerary(key, tourist, flight, mission);
                 tourist.addToItinerary(touristItinerary);
                 flight.addCustomerItinerary(touristItinerary);
                 if (mission != null) {
                     mission.addPassengerItinerary(touristItinerary);
                 }
+                if (prerequisite != null) {
+                    itineraryMap.put(key, touristItinerary);
+                    prerequisiteMap.put(key, prerequisite);
+                }
             } catch (Exception e) {
                 System.out.println("Error reading line " + line);
                 throw e;
             }
+        }
+        for (Map.Entry<String, String> prerequisite : prerequisiteMap.entrySet()) {
+            TouristItinerary dependentItinerary = itineraryMap.get(prerequisite.getKey());
+            TouristItinerary blockingItinerary = itineraryMap.get(prerequisite.getValue());
+            dependentItinerary.setPrerequisite(blockingItinerary);
         }
     }
 

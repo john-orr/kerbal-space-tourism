@@ -2,9 +2,10 @@ package com.company.model;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
-public class Tourist {
+public class Tourist extends Entity {
 
     private String name;
     private String location;
@@ -19,6 +20,10 @@ public class Tourist {
     public Tourist(String[] data) {
         this.name = data[1];
         this.location = data[2];
+    }
+
+    public String getKey() {
+        return getName();
     }
 
     public String getName() {
@@ -38,23 +43,34 @@ public class Tourist {
         return itinerary;
     }
 
-    public TouristItinerary getLastItineraryItem() {
-        return itinerary.get(itinerary.size() - 1);
+    public List<TouristItinerary> getNonBlockingItineraries() {
+        List<TouristItinerary> nonBlockingItineraries = new ArrayList<>();
+        List<String> blockingKeys = new ArrayList<>();
+        for (TouristItinerary touristItinerary : itinerary) {
+            if (touristItinerary.getPrerequisite() != null) {
+                blockingKeys.add(touristItinerary.getPrerequisite().getKey());
+            }
+        }
+        for (TouristItinerary touristItinerary : itinerary) {
+            if (!blockingKeys.contains(touristItinerary.getKey())) {
+                nonBlockingItineraries.add(touristItinerary);
+            }
+        }
+        return nonBlockingItineraries;
     }
 
-    public TouristItinerary getNextItineraryItem() {
-        return itinerary.get(0);
+    public TouristItinerary findItinerary(String itineraryKey) {
+        for (TouristItinerary touristItinerary : itinerary) {
+            if (touristItinerary.getKey().equals(itineraryKey)) {
+                return touristItinerary;
+            }
+        }
+        return null;
     }
 
-    public void addToItinerary(Flight flight) {
-        TouristItinerary touristItinerary = new TouristItinerary(this, flight, this.itinerary.size());
-        addToItinerary(touristItinerary);
-        flight.getCustomerItineraries().add(touristItinerary);
-    }
 
     public void addToItinerary(TouristItinerary touristItinerary) {
         this.itinerary.add(touristItinerary);
-        Collections.sort(itinerary);
     }
 
     public void removeFromItinerary(TouristItinerary touristItinerary) {
