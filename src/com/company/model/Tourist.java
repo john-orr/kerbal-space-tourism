@@ -75,6 +75,12 @@ public class Tourist extends Entity {
 
     public void removeFromItinerary(TouristItinerary touristItinerary) {
         this.itinerary.remove(touristItinerary);
+        for (TouristItinerary remainingTouristItinerary : this.itinerary) {
+            if (remainingTouristItinerary.getPrerequisite() != null
+                    && remainingTouristItinerary.getPrerequisite().equals(touristItinerary)) {
+                remainingTouristItinerary.setPrerequisite(null);
+            }
+        }
     }
 
     @Override
