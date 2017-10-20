@@ -221,6 +221,15 @@ public class Database {
         mission.deletePassengerItineraries();
     }
 
+    public void cancelMission(Mission mission) {
+        this.missions.remove(mission);
+        for (TouristItinerary touristItinerary : mission.getPassengerItineraries()) {
+            touristItinerary.setMission(null);
+            touristItinerary.getTourist().setLocation(touristItinerary.getFlight().getOrigin());
+        }
+        mission.deletePassengerItineraries();
+    }
+
     public void removeItineraries(List<TouristItinerary> touristItineraries) {
         for (TouristItinerary touristItinerary : touristItineraries) {
             Tourist tourist = touristItinerary.getTourist();

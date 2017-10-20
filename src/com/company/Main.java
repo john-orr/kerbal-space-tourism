@@ -56,26 +56,62 @@ public class Main {
             mission = database.findMission(missionKey);
         } while (mission == null);
         String status;
-        do {
-            System.out.println("Please enter the new status");
-            status = input.nextLine().toUpperCase();
-        } while (!(status.equals("ACTIVE") || status.equals("COMPLETED")));
-        if (status.equals("ACTIVE")) {
-            mission.setStatus(status);
-        } else {
-            database.completeMission(mission);
-            for (Tourist tourist : database.getFlaggedTourists()) {
-                String delete;
-                do {
-                    System.out.println("Itinerary for " + tourist.getName() + " is now empty. Remove " + tourist.getName() + "? [y/n]");
-                    delete = input.nextLine();
-                } while (!(delete.equals("y") || delete.equals("n")));
-                if (delete.equals("y")) {
-                    database.removeTourist(tourist);
-                } else {
-                    tourist.unflag();
-                }
+        if (mission.getStatus().equals("ACTIVE")) {
+            String updateStatus;
+            do {
+                System.out.println("Update mission status to COMPLETED? [y/n]");
+                updateStatus = input.nextLine();
+            } while (!(updateStatus.equals("y") || updateStatus.equals("n")));
+            if (updateStatus.equals("n")) {
+                return;
             }
+            status = "COMPLETED";
+        } else {
+            // mission status is ready
+            System.out.println("You have two options");
+            System.out.println("\t1. Start mission");
+            System.out.println("\t2. Cancel mission");
+            String option;
+            do {
+                System.out.println("Please select an option");
+                option = input.nextLine();
+            } while (!(option.equals("1") || option.equals("2") || option.equals("c")));
+            switch (option) {
+                case "1":
+                    status = "ACTIVE";
+                    break;
+                case "2":
+                    status = "CANCELLED";
+                    break;
+                default:
+                    return;
+            }
+        }
+        switch (status) {
+            case "ACTIVE":
+                System.out.println("Mission " + mission.getKey() + " started.");
+                mission.setStatus(status);
+                break;
+            case "CANCELLED":
+                database.cancelMission(mission);
+                break;
+            default:
+                database.completeMission(mission);
+                for (Tourist tourist : database.getFlaggedTourists()) {
+                    String delete;
+                    do {
+                        System.out.println("Itinerary for " + tourist
+                                .getName() + " is now empty. Remove " + tourist
+                                .getName() + "? [y/n]");
+                        delete = input.nextLine();
+                    } while (!(delete.equals("y") || delete.equals("n")));
+                    if (delete.equals("y")) {
+                        database.removeTourist(tourist);
+                    } else {
+                        tourist.unflag();
+                    }
+                }
+                break;
         }
     }
 
