@@ -9,6 +9,7 @@ public class Tourist {
     private String name;
     private String location;
     List<TouristItinerary> itinerary = new ArrayList<>();
+    private boolean flagged;
 
     public Tourist(String name) {
         this.name = name.toUpperCase();
@@ -67,5 +68,17 @@ public class Tourist {
             return this.name.equals(that.name);
         }
         return false;
+    }
+
+    public void flagForDelete() {
+        this.flagged = true;
+    }
+
+    public boolean isFlagged() {
+        return flagged;
+    }
+
+    public void unflag() {
+        this.flagged = false;
     }
 }

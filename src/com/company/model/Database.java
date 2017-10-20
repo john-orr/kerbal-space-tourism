@@ -22,6 +22,16 @@ public class Database {
         return tourists;
     }
 
+    public List<Tourist> getFlaggedTourists() {
+        List<Tourist> flaggedTourists = new ArrayList<>();
+        for (Tourist tourist : tourists) {
+            if (tourist.isFlagged()) {
+                flaggedTourists.add(tourist);
+            }
+        }
+        return flaggedTourists;
+    }
+
     public Tourist findTourist(String name) {
         for (Tourist tourist : tourists) {
             if (tourist.getName().equalsIgnoreCase(name)) {
@@ -37,6 +47,10 @@ public class Database {
             return;
         }
         this.tourists.add(tourist);
+    }
+
+    public void removeTourist(Tourist tourist) {
+        this.tourists.remove(tourist);
     }
 
     public void printTourists() {
@@ -197,8 +211,12 @@ public class Database {
 
     public void removeItineraries(List<TouristItinerary> touristItineraries) {
         for (TouristItinerary touristItinerary : touristItineraries) {
-            touristItinerary.getTourist().removeFromItinerary(touristItinerary);
-            touristItinerary.getTourist().setLocation(touristItinerary.getFlight().getDestination());
+            Tourist tourist = touristItinerary.getTourist();
+            tourist.removeFromItinerary(touristItinerary);
+            tourist.setLocation(touristItinerary.getFlight().getDestination());
+            if (tourist.getItinerary().isEmpty()) {
+                tourist.flagForDelete();
+            }
             touristItinerary.getFlight().removeCustomerItinerary(touristItinerary);
             touristItinerary.setMission(null);
         }

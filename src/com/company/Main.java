@@ -60,6 +60,18 @@ public class Main {
             mission.setStatus(status);
         } else {
             database.completeMission(mission);
+            for (Tourist tourist : database.getFlaggedTourists()) {
+                String delete;
+                do {
+                    System.out.println("Itinerary for " + tourist.getName() + " is now empty. Remove " + tourist.getName() + "? [y/n]");
+                    delete = input.nextLine();
+                } while (!(delete.equals("y") || delete.equals("n")));
+                if (delete.equals("y")) {
+                    database.removeTourist(tourist);
+                } else {
+                    tourist.unflag();
+                }
+            }
         }
     }
 
