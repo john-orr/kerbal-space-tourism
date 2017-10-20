@@ -186,7 +186,12 @@ public class Database {
 
     public void insertMission(Mission newMission) {
         newMission.setKey(keyGen(missions));
-        this.missions.add(newMission);
+        addMission(newMission);
+    }
+
+    public void addMission(Mission mission) {
+        this.missions.add(mission);
+        Collections.sort(missions);
     }
 
     public boolean printMissions() {

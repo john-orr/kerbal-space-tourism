@@ -31,7 +31,7 @@ public class Retriever {
                 }
                 Flight flight = database.findFlight(data[2]);
                 Mission mission = new Mission(data, flight);
-                database.getMissions().add(mission);
+                database.addMission(mission);
             } catch (Exception e) {
                 System.out.println("Error reading line " + line);
                 throw e;

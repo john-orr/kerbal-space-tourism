@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class Mission extends Entity {
+public class Mission extends Entity implements Comparable<Mission> {
 
     private String key;
     private Flight flight;
@@ -81,5 +81,10 @@ public class Mission extends Entity {
             return this.key.equals(that.key);
         }
         return false;
+    }
+
+    @Override
+    public int compareTo(Mission that) {
+        return this.status.compareTo(that.getStatus());
     }
 }
