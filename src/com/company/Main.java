@@ -40,7 +40,9 @@ public class Main {
     }
 
     private static void updateMissionStatus() {
-        database.printMissions();
+        if (!database.printMissions()) {
+            return;
+        }
         Mission mission;
         do {
             System.out.println("Please select a mission");
@@ -163,8 +165,7 @@ public class Main {
             Tourist tourist;
             String name;
             do {
-                boolean valid = database.printTourists();
-                if (!valid) {
+                if (!database.printTourists()) {
                     return;
                 }
                 System.out.println("Please select a tourist");
@@ -182,8 +183,7 @@ public class Main {
                     if (!tourist.getItinerary().isEmpty() && flightRepeat == null) {
                         database.printTouristItinerary(tourist);
                     }
-                    boolean valid = database.printAvailableFlights(tourist);
-                    if (!valid) {
+                    if (!database.printAvailableFlights(tourist)) {
                         System.out.println("No available flights");
                         break;
 

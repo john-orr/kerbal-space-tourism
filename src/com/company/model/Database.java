@@ -184,10 +184,10 @@ public class Database {
         this.missions.add(newMission);
     }
 
-    public void printMissions() {
+    public boolean printMissions() {
         if (missions.isEmpty()) {
             System.out.println("There are no missions");
-            return;
+            return false;
         }
         StringBuilder output = new StringBuilder("MISSIONS\n")
                 .append(tableCell("KEY"))
@@ -212,6 +212,7 @@ public class Database {
             output.append("\n");
         }
         System.out.println(output.toString());
+        return true;
     }
 
     public void completeMission(Mission mission) {
