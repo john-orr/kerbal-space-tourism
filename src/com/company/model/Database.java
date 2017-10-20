@@ -1,9 +1,7 @@
 package com.company.model;
 
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 public class Database {
 
@@ -120,10 +118,14 @@ public class Database {
         return String.format(COLUMN_FORMAT, content);
     }
 
-    public void insertItinerary(Tourist tourist, Flight flight, TouristItinerary prerequisite) {
-        TouristItinerary touristItinerary =
-                new TouristItinerary(keyGen(tourist.getItinerary()), tourist, flight, prerequisite);
-        tourist.addToItinerary(touristItinerary);
+    public void insertItinerary(Tourist itineraryTourist, Flight flight, TouristItinerary prerequisite) {
+        Set<TouristItinerary> touristItineraries = new HashSet<>();
+        for (Tourist tourist : tourists) {
+            touristItineraries.addAll(tourist.getItinerary());
+        }
+        String key = keyGen(touristItineraries);
+        TouristItinerary touristItinerary = new TouristItinerary(key, itineraryTourist, flight, prerequisite);
+        itineraryTourist.addToItinerary(touristItinerary);
         flight.addCustomerItinerary(touristItinerary);
     }
 
@@ -243,7 +245,7 @@ public class Database {
         }
     }
 
-    private String keyGen(List<? extends Entity> entities) {
+    private String keyGen(Collection<? extends Entity> entities) {
         int keyGen = 0;
         for (Entity entity : entities) {
             int entityKey = Integer.parseInt(entity.getKey());
