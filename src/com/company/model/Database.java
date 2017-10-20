@@ -95,8 +95,8 @@ public class Database {
         printFlights(null);
     }
 
-    public boolean printFlights(List<String> origins) {
-        boolean flightsToShow = false;
+    public List<String> printFlights(List<String> origins) {
+        List<String> flightKeys = new ArrayList<>();
         StringBuilder output = new StringBuilder("FLIGHTS\n")
                 .append(tableCell("KEY"))
                 .append(tableCell("ORIGIN"))
@@ -108,13 +108,13 @@ public class Database {
                         .append(tableCell(flight.getOrigin()))
                         .append(tableCell(flight.getDestination()))
                         .append(tableCell(flight.getFlyby())).append("\n");
-                flightsToShow = true;
+                flightKeys.add(flight.getKey());
             }
         }
-        if (flightsToShow) {
+        if (!flightKeys.isEmpty()) {
             System.out.println(output.toString());
         }
-        return flightsToShow;
+        return flightKeys;
     }
 
     private String tableCell(Object content) {
@@ -158,7 +158,7 @@ public class Database {
         System.out.println(output.toString());
     }
 
-    public boolean printAvailableFlights(Tourist tourist) {
+    public List<String> printAvailableFlights(Tourist tourist) {
         List<String> origins = new ArrayList<>();
         if (tourist.getItinerary().isEmpty()) {
             origins.add(tourist.getLocation());

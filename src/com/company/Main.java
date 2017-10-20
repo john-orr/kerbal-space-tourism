@@ -4,6 +4,7 @@ import com.company.model.*;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.List;
 import java.util.Scanner;
 
 import static com.company.MenuOption.*;
@@ -217,23 +218,27 @@ public class Main {
             if (tourist == null) {
                 return;
             }
-            String flightRepeat = null;
+            String flightRepeat;
+            String flightKey = null;
             do {
-                Flight flight = null;
-                String key;
+                List<String> availableFlightKeys;
                 do {
-                    if (!tourist.getItinerary().isEmpty() && flightRepeat == null) {
+                    if (flightKey != null) {
+                        System.out.println("Invalid flight key");
+                    }
+                    if (!tourist.getItinerary().isEmpty() && flightKey == null) {
                         database.printTouristItinerary(tourist);
                     }
-                    if (!database.printAvailableFlights(tourist)) {
+                    availableFlightKeys = database.printAvailableFlights(tourist);
+                    if (availableFlightKeys.isEmpty()) {
                         System.out.println("No available flights");
                         break;
 
                     }
                     System.out.println("Please enter the key of the flight to add to the itinerary");
-                    key = input.nextLine();
-                    flight = database.findFlight(key);
-                } while (flight == null && !key.equals("c"));
+                    flightKey = input.nextLine();
+                } while (!(availableFlightKeys.contains(flightKey) || flightKey.equals("c")));
+                Flight flight = database.findFlight(flightKey);
                 if (flight == null) {
                     break;
                 }
