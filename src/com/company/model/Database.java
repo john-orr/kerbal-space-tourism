@@ -54,6 +54,10 @@ public class Database {
     }
 
     public void printTourists() {
+        if (tourists.isEmpty()) {
+            System.out.println("There are no tourists");
+            return;
+        }
         StringBuilder output = new StringBuilder("TOURISTS\n")
                 .append(tableCell("NAME"))
                 .append(tableCell("LOCATION")).append("\n");
