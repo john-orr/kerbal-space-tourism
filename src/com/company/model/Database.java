@@ -53,10 +53,10 @@ public class Database {
         this.tourists.remove(tourist);
     }
 
-    public void printTourists() {
+    public boolean printTourists() {
         if (tourists.isEmpty()) {
             System.out.println("There are no tourists");
-            return;
+            return false;
         }
         StringBuilder output = new StringBuilder("TOURISTS\n")
                 .append(tableCell("NAME"))
@@ -66,6 +66,7 @@ public class Database {
                     .append(tableCell(tourist.getLocation())).append("\n");
         }
         System.out.println(output.toString());
+        return true;
     }
 
     public List<Flight> getFlights() {
@@ -102,7 +103,8 @@ public class Database {
         printFlights(null);
     }
 
-    public void printFlights(String origin) {
+    public boolean printFlights(String origin) {
+        boolean flightsShown = false;
         StringBuilder output = new StringBuilder("FLIGHTS\n")
                 .append(tableCell("KEY"))
                 .append(tableCell("ORIGIN"))
@@ -114,9 +116,11 @@ public class Database {
                         .append(tableCell(flight.getOrigin()))
                         .append(tableCell(flight.getDestination()))
                         .append(tableCell(flight.getFlyby())).append("\n");
+                flightsShown = true;
             }
         }
         System.out.println(output.toString());
+        return flightsShown;
     }
 
     private String tableCell(Object content) {
@@ -142,14 +146,14 @@ public class Database {
         System.out.println(output.toString());
     }
 
-    public void printAvailableFlights(Tourist tourist) {
+    public boolean printAvailableFlights(Tourist tourist) {
         String origin;
         if (tourist.getItinerary().isEmpty()) {
             origin = tourist.getLocation();
         } else {
             origin = tourist.getLastItineraryItem().getFlight().getDestination();
         }
-        printFlights(origin);
+        return printFlights(origin);
     }
 
     public Mission findMission(String missionKey) {

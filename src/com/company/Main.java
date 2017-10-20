@@ -162,7 +162,10 @@ public class Main {
             Tourist tourist;
             String name;
             do {
-                database.printTourists();
+                boolean valid = database.printTourists();
+                if (!valid) {
+                    return;
+                }
                 System.out.println("Please select a tourist");
                 name = input.nextLine();
                 tourist = database.findTourist(name);
@@ -178,14 +181,13 @@ public class Main {
                     if (!tourist.getItinerary().isEmpty() && flightRepeat == null) {
                         database.printTouristItinerary(tourist);
                     }
-                    if (tourist.getItinerary().size() != database.getFlights().size()) {
-                        database.printAvailableFlights(tourist);
-                    } else {
+                    boolean valid = database.printAvailableFlights(tourist);
+                    if (!valid) {
                         System.out.println("No available flights");
                         break;
+
                     }
-                    System.out
-                            .println("Please enter the key of the flight to add to the itinerary");
+                    System.out.println("Please enter the key of the flight to add to the itinerary");
                     key = input.nextLine();
                     flight = database.findFlight(key);
                 } while (flight == null && !key.equals("c"));
