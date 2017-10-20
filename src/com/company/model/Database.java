@@ -45,6 +45,7 @@ public class Database {
             return;
         }
         this.tourists.add(tourist);
+        Collections.sort(tourists);
     }
 
     public void removeTourist(Tourist tourist) {

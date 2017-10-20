@@ -1,11 +1,9 @@
 package com.company.model;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 
-public class Tourist extends Entity {
+public class Tourist extends Entity implements Comparable<Tourist> {
 
     private String name;
     private String location;
@@ -102,5 +100,10 @@ public class Tourist extends Entity {
 
     public void unflag() {
         this.flagged = false;
+    }
+
+    @Override
+    public int compareTo(Tourist that) {
+        return this.name.compareTo(that.name);
     }
 }
