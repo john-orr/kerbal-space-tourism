@@ -95,7 +95,7 @@ public class Database {
     }
 
     public boolean printFlights(List<String> origins) {
-        boolean flightsShown = false;
+        boolean flightsToShow = false;
         StringBuilder output = new StringBuilder("FLIGHTS\n")
                 .append(tableCell("KEY"))
                 .append(tableCell("ORIGIN"))
@@ -107,11 +107,13 @@ public class Database {
                         .append(tableCell(flight.getOrigin()))
                         .append(tableCell(flight.getDestination()))
                         .append(tableCell(flight.getFlyby())).append("\n");
-                flightsShown = true;
+                flightsToShow = true;
             }
         }
-        System.out.println(output.toString());
-        return flightsShown;
+        if (flightsToShow) {
+            System.out.println(output.toString());
+        }
+        return flightsToShow;
     }
 
     private String tableCell(Object content) {
