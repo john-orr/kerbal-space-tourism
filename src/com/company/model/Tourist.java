@@ -71,12 +71,12 @@ public class Tourist extends Entity implements Comparable<Tourist> {
         this.itinerary.add(touristItinerary);
     }
 
-    public void removeFromItinerary(TouristItinerary touristItinerary) {
+    public void removeFromItinerary(TouristItinerary touristItinerary, boolean patchPrerequisites) {
         this.itinerary.remove(touristItinerary);
         for (TouristItinerary remainingTouristItinerary : this.itinerary) {
             if (remainingTouristItinerary.getPrerequisite() != null
                     && remainingTouristItinerary.getPrerequisite().equals(touristItinerary)) {
-                remainingTouristItinerary.setPrerequisite(null);
+                remainingTouristItinerary.setPrerequisite(patchPrerequisites ? touristItinerary.getPrerequisite() : null);
             }
         }
     }

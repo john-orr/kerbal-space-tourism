@@ -133,6 +133,10 @@ public class Database {
     }
 
     public void printTouristItinerary(Tourist tourist) {
+        if (tourist.getItinerary().isEmpty()) {
+            System.out.println(tourist.getName() + "'s itinerary is empty");
+            return;
+        }
         StringBuilder output = new StringBuilder("ITINERARY\n")
                 .append(tableCell("I.KEY"))
                 .append(tableCell("NAME"))
@@ -239,7 +243,7 @@ public class Database {
     public void removeItineraries(List<TouristItinerary> touristItineraries) {
         for (TouristItinerary touristItinerary : touristItineraries) {
             Tourist tourist = touristItinerary.getTourist();
-            tourist.removeFromItinerary(touristItinerary);
+            tourist.removeFromItinerary(touristItinerary, false);
             tourist.setLocation(touristItinerary.getFlight().getDestination());
             if (tourist.getItinerary().isEmpty()) {
                 tourist.flagForDelete();

@@ -205,7 +205,6 @@ public class Main {
     }
 
     private static void touristItinerary() throws FileNotFoundException {
-        String touristRepeat;
         do {
             Tourist tourist;
             String name;
@@ -220,56 +219,158 @@ public class Main {
             if (tourist == null) {
                 return;
             }
-            String flightRepeat;
-            String flightKey = null;
             do {
-                List<String> availableFlightKeys;
+                database.printTouristItinerary(tourist);
+                String itineraryAction;
                 do {
-                    if (flightKey != null) {
-                        System.out.println("Invalid flight key");
-                    }
-                    if (!tourist.getItinerary().isEmpty() && flightKey == null) {
-                        database.printTouristItinerary(tourist);
-                    }
-                    availableFlightKeys = database.printAvailableFlights(tourist);
-                    if (availableFlightKeys.isEmpty()) {
-                        System.out.println("No available flights");
+                    System.out.println("What would you like to do?");
+                    System.out.println("\t1. Insert");
+                    System.out.println("\t2. Modify");
+                    System.out.println("\t3. Delete");
+                    itineraryAction = input.nextLine();
+                } while (!(itineraryAction.equals("1") || itineraryAction.equals("2") || itineraryAction.equals("3") ||
+                        itineraryAction.equals("c")));
+                switch (itineraryAction) {
+                    case "1":
+                        addFlightToItinerary(tourist);
                         break;
-
-                    }
-                    System.out.println("Please enter the key of the flight to add to the itinerary");
-                    flightKey = input.nextLine();
-                } while (!(availableFlightKeys.contains(flightKey) || flightKey.equals("c")));
-                Flight flight = database.findFlight(flightKey);
-                if (flight == null) {
+                    case "2":
+                        modifyOrDeleteItinerary(tourist, "modify");
+                        break;
+                    case "3":
+                        modifyOrDeleteItinerary(tourist, "delete");
+                        break;
+                }
+                if (!isValidItinerary(tourist.getItinerary())) {
+                    continue;
+                }
+                if (itineraryAction.equals("c")) {
                     break;
                 }
-                TouristItinerary prerequisite = null;
-                if (!tourist.getItinerary().isEmpty()) {
-                    database.printTouristItinerary(tourist);
-                    String itineraryKey;
-                    do {
-                        System.out.println("Please enter the key of the prerequisite itinerary (n if none)");
-                        itineraryKey = input.nextLine();
-                        prerequisite = tourist.findItinerary(itineraryKey);
-                        if (prerequisite == null || !flight.getOrigin().equals(prerequisite.getFlight().getDestination())) {
-                            System.out.println("Seems like an invalid prerequisite");
-                            prerequisite = null;
-                        }
-                    } while (prerequisite == null && !itineraryKey.equals("n"));
+            } while (true);
+        } while (true);
+    }
+
+    private static boolean isValidItinerary(List<TouristItinerary> nonBlockingItineraries) {
+        // follow the prerequisite chain
+        for (TouristItinerary nonBlockingItinerary : nonBlockingItineraries) {
+            TouristItinerary itinerary = nonBlockingItinerary;
+            while (itinerary != null) {
+                if (itinerary.getPrerequisite() == null) {
+                    if (!itinerary.getFlight().getOrigin().equals("KERBIN")) {
+                        System.out.println("*****Itinerary without prerequisite does not originate at KERBIN. key=" +
+                                itinerary.getKey());
+                        return false;
+                    }
+                } else if (!itinerary.getFlight().getOrigin().equals(itinerary.getPrerequisite().getFlight().getDestination())) {
+                    System.out.println(
+                            "*****Itinerary origin does not match prerequisite destination. key=" + itinerary.getKey());
+                    return false;
                 }
-                database.insertItinerary(tourist, flight, prerequisite);
-                database.printTouristItinerary(tourist);
-                do {
-                    System.out.println("Add another flight? [y/n]");
-                    flightRepeat = input.nextLine();
-                } while (!(flightRepeat.equals("y") || flightRepeat.equals("n")));
-            } while (flightRepeat.equals("y"));
+                itinerary = itinerary.getPrerequisite();
+            }
+        }
+        return true;
+    }
+
+    private static void modifyOrDeleteItinerary(Tourist tourist, String mode) {
+        do {
+            database.printTouristItinerary(tourist);
+            TouristItinerary itinerary;
+            String itineraryKey;
             do {
-                System.out.println("Switch tourist? [y/n]");
-                touristRepeat = input.nextLine();
-            } while (!(touristRepeat.equals("y") || touristRepeat.equals("n")));
-        } while (touristRepeat.equals("y"));
+                System.out.println("Please enter the key of the itinerary to " + mode);
+                itineraryKey = input.nextLine();
+                itinerary = tourist.findItinerary(itineraryKey);
+                if (itinerary != null && itinerary.getMission() != null) {
+                    System.out.println("Action '" + mode + "' is not possible as a mission for this itinerary exists");
+                    itinerary = null;
+                }
+            } while (itinerary == null && !itineraryKey.equals("c"));
+            if (itinerary == null) {
+                return;
+            }
+            switch (mode) {
+                case "modify":
+                    modifyItinerary(tourist, itinerary);
+                    break;
+                case "delete":
+                    removeItinerary(tourist, itinerary);
+                    break;
+            }
+        } while (true);
+    }
+
+    private static void removeItinerary(Tourist tourist, TouristItinerary itinerary) {
+        String patchPrerequisites = "n";
+        if (itinerary.getPrerequisite() != null) {
+            do {
+                System.out.println("Patch up the prerequisites? [y/n]");
+                patchPrerequisites = input.nextLine();
+            } while (!(patchPrerequisites.equals("y") || patchPrerequisites.equals("n")));
+        }
+        tourist.removeFromItinerary(itinerary, patchPrerequisites.equals("y"));
+    }
+
+    private static void modifyItinerary(Tourist tourist, TouristItinerary itinerary) {
+        String itineraryKey;
+        TouristItinerary prerequisite;
+        do {
+            System.out.println("Enter key of the prerequisite itinerary (n if none)");
+            itineraryKey = input.nextLine();
+            prerequisite = tourist.findItinerary(itineraryKey);
+            if (prerequisite != null &&
+                    !itinerary.getFlight().getOrigin().equals(prerequisite.getFlight().getDestination())) {
+                System.out.println("Seems like an invalid prerequisite");
+                prerequisite = null;
+            }
+        } while (prerequisite == null && !itineraryKey.equals("n"));
+        itinerary.setPrerequisite(prerequisite);
+    }
+
+    private static void addFlightToItinerary(Tourist tourist) {
+        boolean first = true;
+        do {
+            List<String> availableFlightKeys;
+            String flightKey = null;
+            do {
+                if (flightKey != null) {
+                    System.out.println("Invalid flight key");
+                }
+                if (first) {
+                    first = false;
+                    database.printTouristItinerary(tourist);
+                }
+                availableFlightKeys = database.printAvailableFlights(tourist);
+                if (availableFlightKeys.isEmpty()) {
+                    System.out.println("No available flights");
+                    break;
+
+                }
+                System.out.println("Please enter the key of the flight to add to the itinerary");
+                flightKey = input.nextLine();
+            } while (!(availableFlightKeys.contains(flightKey) || flightKey.equals("c")));
+            Flight flight = database.findFlight(flightKey);
+            if (flight == null) {
+                break;
+            }
+            TouristItinerary prerequisite = null;
+            if (!tourist.getItinerary().isEmpty()) {
+                database.printTouristItinerary(tourist);
+                String itineraryKey;
+                do {
+                    System.out.println("Please enter the key of the prerequisite itinerary (n if none)");
+                    itineraryKey = input.nextLine();
+                    prerequisite = tourist.findItinerary(itineraryKey);
+                    if (prerequisite != null && !flight.getOrigin().equals(prerequisite.getFlight().getDestination())) {
+                        System.out.println("Seems like an invalid prerequisite");
+                        prerequisite = null;
+                    }
+                } while (prerequisite == null && !itineraryKey.equals("n"));
+            }
+            database.insertItinerary(tourist, flight, prerequisite);
+            database.printTouristItinerary(tourist);
+        } while (true);
     }
 
     private static void viewFlights() {
