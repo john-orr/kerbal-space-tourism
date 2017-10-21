@@ -136,7 +136,6 @@ public class Database {
         StringBuilder output = new StringBuilder("ITINERARY\n")
                 .append(tableCell("I.KEY"))
                 .append(tableCell("NAME"))
-                .append(tableCell("F.KEY"))
                 .append(tableCell("ORIGIN"))
                 .append(tableCell("DESTINATION"))
                 .append(tableCell("FLYBY"))
@@ -144,7 +143,6 @@ public class Database {
         for (TouristItinerary touristItinerary : tourist.getItinerary()) {
             output.append(tableCell(touristItinerary.getKey()))
                     .append(tableCell(tourist.getName()))
-                    .append(tableCell(touristItinerary.getFlight().getKey()))
                     .append(tableCell(touristItinerary.getFlight().getOrigin()))
                     .append(tableCell(touristItinerary.getFlight().getDestination()))
                     .append(tableCell(touristItinerary.getFlight().getFlyby()));
@@ -201,7 +199,6 @@ public class Database {
         }
         StringBuilder output = new StringBuilder("MISSIONS\n")
                 .append(tableCell("KEY"))
-                .append(tableCell("F.KEY"))
                 .append(tableCell("ORIGIN"))
                 .append(tableCell("DESTINATION"))
                 .append(tableCell("FLYBY"))
@@ -210,7 +207,6 @@ public class Database {
                 .append("PASSENGERS").append("\n");
         for (Mission mission : missions) {
             output.append(tableCell(mission.getKey()))
-                    .append(tableCell(mission.getFlight().getKey()))
                     .append(tableCell(mission.getFlight().getOrigin()))
                     .append(tableCell(mission.getFlight().getDestination()))
                     .append(tableCell(mission.getFlight().getFlyby()))
