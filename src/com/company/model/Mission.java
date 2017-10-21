@@ -85,6 +85,10 @@ public class Mission extends Entity implements Comparable<Mission> {
 
     @Override
     public int compareTo(Mission that) {
-        return this.status.compareTo(that.getStatus());
+        int comparison = this.status.compareTo(that.getStatus());
+        if (comparison == 0) {
+            comparison = this.key.compareTo(that.key);
+        }
+        return comparison;
     }
 }

@@ -4,6 +4,7 @@ import com.company.model.*;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 import java.util.Scanner;
 
@@ -92,6 +93,7 @@ public class Main {
             case "ACTIVE":
                 System.out.println("Mission " + mission.getKey() + " started.");
                 mission.setStatus(status);
+                Collections.sort(database.getMissions());
                 break;
             case "CANCELLED":
                 database.cancelMission(mission);
