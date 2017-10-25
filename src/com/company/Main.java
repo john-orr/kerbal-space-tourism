@@ -126,7 +126,7 @@ public class Main {
                     if (delete.equals("y")) {
                         database.removeTourist(tourist);
                     } else {
-                        tourist.unflag();
+                        tourist.unFlag();
                     }
                 }
                 break;

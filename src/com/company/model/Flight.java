@@ -12,13 +12,13 @@ public class Flight extends Entity implements Comparable<Flight> {
     private int capacity;
     private List<TouristItinerary> customerItineraries = new ArrayList<>();
 
-    public Flight(String origin, String destination, String flyby, int capactiy) {
+    public Flight(String origin, String destination, String flyby, int capacity) {
         this.origin = origin.toUpperCase();
         this.destination = destination.toUpperCase();
         if (!flyby.isEmpty()) {
             this.flyby = flyby.toUpperCase();
         }
-        this.capacity = capactiy;
+        this.capacity = capacity;
     }
 
     public Flight(String[] data) {

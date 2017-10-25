@@ -98,7 +98,7 @@ public class Tourist extends Entity implements Comparable<Tourist> {
         return flagged;
     }
 
-    public void unflag() {
+    public void unFlag() {
         this.flagged = false;
     }
 
