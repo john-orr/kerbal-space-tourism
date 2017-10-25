@@ -38,9 +38,24 @@ public class Main {
                 viewMissions();
             } else if (choice == UPDATE_MISSION_STATUS) {
                 updateMissionStatus();
+            } else if (choice == VIEW_FLIGHT_BOOKINGS) {
+                viewFlightBookings();
             }
         } while (true);
         Persister.write(database);
+    }
+
+    private static void viewFlightBookings() {
+        String includePrerequisites = "";
+        do {
+            database.printFlightBookings(includePrerequisites.equals("i"));
+            if (includePrerequisites.equals("i")) {
+                System.out.println("Enter e to exclude customers with prerequisites");
+            } else {
+                System.out.println("Enter i to include customers with prerequisites");
+            }
+            includePrerequisites = input.nextLine();
+        } while (includePrerequisites.equals("i") || includePrerequisites.equals("e"));
     }
 
     private static void updateMissionStatus() {

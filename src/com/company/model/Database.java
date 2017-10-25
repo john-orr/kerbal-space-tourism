@@ -117,6 +117,32 @@ public class Database {
         return flightKeys;
     }
 
+    public void printFlightBookings(boolean includePrerequisites) {
+        StringBuilder output = new StringBuilder("FLIGHTS\n")
+                .append(tableCell("KEY"))
+                .append(tableCell("ORIGIN"))
+                .append(tableCell("DESTINATION"))
+                .append(tableCell("FLYBY"))
+                .append(tableCell("CAPACITY"))
+                .append(tableCell("NUM_BOOKINGS"))
+                .append("CUSTOMERS").append("\n");
+        for (Flight flight : flights) {
+            List<TouristItinerary> bookingsWithoutMissions =
+                    flight.getBookingsWithoutMissions(includePrerequisites);
+            output.append(tableCell(flight.getKey()))
+                    .append(tableCell(flight.getOrigin()))
+                    .append(tableCell(flight.getDestination()))
+                    .append(tableCell(flight.getFlyby()))
+                    .append(tableCell(flight.getCapacity()))
+                    .append(tableCell(bookingsWithoutMissions.size()));
+            for (TouristItinerary customerItinerary : bookingsWithoutMissions) {
+                output.append(customerItinerary.getTourist().getName()).append("\t");
+            }
+            output.append("\n");
+        }
+        System.out.println(output.toString());
+    }
+
     private String tableCell(Object content) {
         return String.format(COLUMN_FORMAT, content);
     }

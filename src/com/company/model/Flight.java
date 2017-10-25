@@ -59,6 +59,17 @@ public class Flight extends Entity implements Comparable<Flight> {
         return customerItineraries;
     }
 
+    public List<TouristItinerary> getBookingsWithoutMissions(boolean includePrerequisites) {
+        List<TouristItinerary> readyCustomerItineraries = new ArrayList<>();
+        for (TouristItinerary customerItinerary : customerItineraries) {
+            if (customerItinerary.getMission() == null
+                    && (includePrerequisites || customerItinerary.getPrerequisite() == null)) {
+                readyCustomerItineraries.add(customerItinerary);
+            }
+        }
+        return readyCustomerItineraries;
+    }
+
     public void addCustomerItinerary(TouristItinerary touristItinerary) {
         this.customerItineraries.add(touristItinerary);
     }
