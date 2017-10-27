@@ -272,7 +272,8 @@ public class Main {
             TouristItinerary itinerary = nonBlockingItinerary;
             while (itinerary != null) {
                 if (itinerary.getPrerequisite() == null) {
-                    if (!itinerary.getFlight().getOrigin().equals(itinerary.getTourist().getLocation())) {
+                    if (!itinerary.getFlight().getOrigin().equals(itinerary.getTourist().getLocation()) &&
+                            itinerary.getMission() == null) {
                         System.out.println(
                                 "*****Itinerary without prerequisite does not originate at tourist location, " +
                                         itinerary.getTourist().getLocation() + ". key=" + itinerary.getKey());
