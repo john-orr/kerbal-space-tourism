@@ -291,6 +291,7 @@ public class Main {
     }
 
     private static void modifyOrDeleteItinerary(Tourist tourist, String mode) {
+        boolean repeat = true;
         do {
             database.printTouristItinerary(tourist);
             TouristItinerary itinerary;
@@ -313,9 +314,10 @@ public class Main {
                     break;
                 case "delete":
                     removeItinerary(tourist, itinerary);
+                    repeat = !tourist.getItinerary().isEmpty();
                     break;
             }
-        } while (true);
+        } while (repeat);
     }
 
     private static void removeItinerary(Tourist tourist, TouristItinerary itinerary) {
