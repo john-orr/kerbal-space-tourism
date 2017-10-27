@@ -272,9 +272,10 @@ public class Main {
             TouristItinerary itinerary = nonBlockingItinerary;
             while (itinerary != null) {
                 if (itinerary.getPrerequisite() == null) {
-                    if (!itinerary.getFlight().getOrigin().equals("KERBIN")) {
-                        System.out.println("*****Itinerary without prerequisite does not originate at KERBIN. key=" +
-                                itinerary.getKey());
+                    if (!itinerary.getFlight().getOrigin().equals(itinerary.getTourist().getLocation())) {
+                        System.out.println(
+                                "*****Itinerary without prerequisite does not originate at tourist location, " +
+                                        itinerary.getTourist().getLocation() + ". key=" + itinerary.getKey());
                         return false;
                     }
                 } else if (!itinerary.getFlight().getOrigin().equals(itinerary.getPrerequisite().getFlight().getDestination())) {
