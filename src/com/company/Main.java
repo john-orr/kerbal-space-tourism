@@ -12,8 +12,8 @@ import static com.company.MenuOption.*;
 
 public class Main {
 
-    static Scanner input = new Scanner(System.in);
-    static Database database;
+    private static Scanner input = new Scanner(System.in);
+    private static Database database;
 
     public static void main(String[] args) throws IOException {
         init();
@@ -460,7 +460,7 @@ public class Main {
         } while (true);
     }
 
-    static void init() throws IOException {
+    private static void init() throws IOException {
         database = Retriever.read();
     }
 }

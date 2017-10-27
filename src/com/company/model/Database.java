@@ -5,10 +5,10 @@ import java.util.*;
 
 public class Database {
 
-    List<Tourist> tourists;
-    List<Flight> flights;
-    List<Mission> missions;
-    public static final String COLUMN_FORMAT = "%-15s| ";
+    private List<Tourist> tourists;
+    private List<Flight> flights;
+    private List<Mission> missions;
+    private static final String COLUMN_FORMAT = "%-15s| ";
 
     public Database(List<Tourist> tourists, List<Flight> flights) {
         this.tourists = tourists;
@@ -95,7 +95,7 @@ public class Database {
         printFlights(null);
     }
 
-    public List<String> printFlights(List<String> origins) {
+    private List<String> printFlights(List<String> origins) {
         List<String> flightKeys = new ArrayList<>();
         StringBuilder output = new StringBuilder("FLIGHTS\n")
                 .append(tableCell("KEY"))
@@ -266,7 +266,7 @@ public class Database {
         mission.deletePassengerItineraries();
     }
 
-    public void removeItineraries(List<TouristItinerary> touristItineraries) {
+    private void removeItineraries(List<TouristItinerary> touristItineraries) {
         for (TouristItinerary touristItinerary : touristItineraries) {
             Tourist tourist = touristItinerary.getTourist();
             tourist.removeFromItinerary(touristItinerary, false);

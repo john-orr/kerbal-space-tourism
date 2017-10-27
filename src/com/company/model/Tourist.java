@@ -7,7 +7,7 @@ public class Tourist extends Entity implements Comparable<Tourist> {
 
     private String name;
     private String location;
-    List<TouristItinerary> itinerary = new ArrayList<>();
+    private List<TouristItinerary> itinerary = new ArrayList<>();
     private boolean flagged;
 
     public Tourist(String name) {
@@ -41,7 +41,7 @@ public class Tourist extends Entity implements Comparable<Tourist> {
         return itinerary;
     }
 
-    public List<TouristItinerary> getNonBlockingItineraries() {
+    List<TouristItinerary> getNonBlockingItineraries() {
         List<TouristItinerary> nonBlockingItineraries = new ArrayList<>();
         List<String> blockingKeys = new ArrayList<>();
         for (TouristItinerary touristItinerary : itinerary) {
@@ -90,11 +90,11 @@ public class Tourist extends Entity implements Comparable<Tourist> {
         return false;
     }
 
-    public void flagForDelete() {
+    void flagForDelete() {
         this.flagged = true;
     }
 
-    public boolean isFlagged() {
+    boolean isFlagged() {
         return flagged;
     }
 

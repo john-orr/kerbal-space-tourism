@@ -7,9 +7,9 @@ import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.util.List;
 
-public class Persister {
+class Persister {
 
-    public static void write(Database database) throws FileNotFoundException {
+    static void write(Database database) throws FileNotFoundException {
         writeTourists(database.getTourists());
         writeFlights(database.getFlights());
         writeTouristItinerary(database.getTourists());

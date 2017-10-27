@@ -70,7 +70,7 @@ public class Mission extends Entity implements Comparable<Mission> {
         }
     }
 
-    public void deletePassengerItineraries() {
+    void deletePassengerItineraries() {
         this.passengerItineraries = null;
     }
 

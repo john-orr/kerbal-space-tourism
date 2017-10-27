@@ -8,7 +8,7 @@ public class TouristItinerary extends Entity {
     private TouristItinerary prerequisite;
     private Mission mission;
 
-    public TouristItinerary(String key, Tourist tourist, Flight flight, Mission mission, TouristItinerary prerequisite) {
+    private TouristItinerary(String key, Tourist tourist, Flight flight, Mission mission, TouristItinerary prerequisite) {
         this.key = key;
         this.tourist = tourist;
         this.flight = flight;
@@ -20,7 +20,7 @@ public class TouristItinerary extends Entity {
         this(key, tourist, flight, mission, null);
     }
 
-    public TouristItinerary(String key, Tourist tourist, Flight flight, TouristItinerary prerequisite) {
+    TouristItinerary(String key, Tourist tourist, Flight flight, TouristItinerary prerequisite) {
         this(key, tourist, flight, null, prerequisite);
     }
 
