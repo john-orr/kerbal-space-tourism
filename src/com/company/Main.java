@@ -41,9 +41,18 @@ public class Main {
                 updateMissionStatus();
             } else if (choice == VIEW_FLIGHT_BOOKINGS) {
                 viewFlightBookings();
+            } else if (choice == VALIDATE_ITINERARIES) {
+                validateTouristItineraries();
             }
         } while (true);
         Persister.write(database);
+    }
+
+    private static void validateTouristItineraries() {
+        for (Tourist tourist : database.getTourists()) {
+            System.out.println(String.format("Validating %s itinerary", tourist.getName()));
+            isValidItinerary(tourist);
+        }
     }
 
     private static void viewFlightBookings() {
@@ -261,7 +270,6 @@ public class Main {
                 if (!isValidItinerary(tourist)) {
                     continue;
                 }
-                System.out.println("Valid itinerary.");
                 if (itineraryAction.equals("c")) {
                     break;
                 }
@@ -319,6 +327,9 @@ public class Main {
                 System.out.println("*****Flight chain end point is not Kerbin.");
                 validItinerary = false;
             }
+        }
+        if (validItinerary) {
+            System.out.println("Valid itinerary.");
         }
         return validItinerary;
     }
