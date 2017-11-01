@@ -350,21 +350,34 @@ public class Main {
     private static void addFlightToItinerary(Tourist tourist) {
         boolean first = true;
         do {
+            if (first) {
+                first = false;
+                database.printTouristItinerary(tourist);
+            }
+            System.out.println("Add new flight to itinerary");
+            TouristItinerary prerequisite = null;
+            if (!tourist.getItinerary().isEmpty()) {
+                String itineraryKey;
+                do {
+                    System.out.println(
+                            "Please enter the key of the prerequisite itinerary (n if none)");
+                    itineraryKey = input.nextLine();
+                    prerequisite = tourist.findItinerary(itineraryKey);
+                } while (prerequisite == null && !itineraryKey.equals("n") && !itineraryKey.equals("c"));
+                if (itineraryKey.equals("c")) {
+                    break;
+                }
+            }
             List<String> availableFlightKeys;
             String flightKey = null;
             do {
                 if (flightKey != null) {
                     System.out.println("Invalid flight key");
                 }
-                if (first) {
-                    first = false;
-                    database.printTouristItinerary(tourist);
-                }
-                availableFlightKeys = database.printAvailableFlights(tourist);
+                availableFlightKeys = database.printAvailableFlights(tourist, prerequisite);
                 if (availableFlightKeys.isEmpty()) {
                     System.out.println("No available flights");
                     break;
-
                 }
                 System.out.println("Please enter the key of the flight to add to the itinerary");
                 flightKey = input.nextLine();
@@ -372,20 +385,6 @@ public class Main {
             Flight flight = database.findFlight(flightKey);
             if (flight == null) {
                 break;
-            }
-            TouristItinerary prerequisite = null;
-            if (!tourist.getItinerary().isEmpty()) {
-                database.printTouristItinerary(tourist);
-                String itineraryKey;
-                do {
-                    System.out.println("Please enter the key of the prerequisite itinerary (n if none)");
-                    itineraryKey = input.nextLine();
-                    prerequisite = tourist.findItinerary(itineraryKey);
-                    if (prerequisite != null && !flight.getOrigin().equals(prerequisite.getFlight().getDestination())) {
-                        System.out.println("Seems like an invalid prerequisite");
-                        prerequisite = null;
-                    }
-                } while (prerequisite == null && !itineraryKey.equals("n"));
             }
             database.insertItinerary(tourist, flight, prerequisite);
             database.printTouristItinerary(tourist);

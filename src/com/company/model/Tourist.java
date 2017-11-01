@@ -41,22 +41,6 @@ public class Tourist extends Entity implements Comparable<Tourist> {
         return itinerary;
     }
 
-    List<TouristItinerary> getNonBlockingItineraries() {
-        List<TouristItinerary> nonBlockingItineraries = new ArrayList<>();
-        List<String> blockingKeys = new ArrayList<>();
-        for (TouristItinerary touristItinerary : itinerary) {
-            if (touristItinerary.getPrerequisite() != null) {
-                blockingKeys.add(touristItinerary.getPrerequisite().getKey());
-            }
-        }
-        for (TouristItinerary touristItinerary : itinerary) {
-            if (!blockingKeys.contains(touristItinerary.getKey())) {
-                nonBlockingItineraries.add(touristItinerary);
-            }
-        }
-        return nonBlockingItineraries;
-    }
-
     public TouristItinerary findItinerary(String itineraryKey) {
         for (TouristItinerary touristItinerary : itinerary) {
             if (touristItinerary.getKey().equals(itineraryKey)) {

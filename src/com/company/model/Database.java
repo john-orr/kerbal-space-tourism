@@ -186,15 +186,15 @@ public class Database {
         System.out.println(output.toString());
     }
 
-    public List<String> printAvailableFlights(Tourist tourist) {
+    public List<String> printAvailableFlights(Tourist tourist, TouristItinerary prerequisite) {
         List<String> origins = new ArrayList<>();
-        if (tourist.getItinerary().isEmpty()) {
-            origins.add(tourist.getLocation());
-        } else {
-            List<TouristItinerary> nonBlockingItineraries = tourist.getNonBlockingItineraries();
-            for (TouristItinerary nonBlockingItinerary : nonBlockingItineraries) {
-                origins.add(nonBlockingItinerary.getFlight().getDestination());
+        if (prerequisite == null) {
+            origins.add("KERBIN");
+            if (!"KERBIN".equals(tourist.getLocation())) {
+                origins.add(tourist.getLocation());
             }
+        } else {
+            origins.add(prerequisite.getFlight().getDestination());
         }
         return printFlights(origins);
     }
