@@ -4,6 +4,7 @@ import com.company.model.*;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Scanner;
@@ -234,6 +235,7 @@ public class Main {
             if (tourist == null) {
                 return;
             }
+            isValidItinerary(tourist);
             do {
                 database.printTouristItinerary(tourist);
                 String itineraryAction;
@@ -256,9 +258,10 @@ public class Main {
                         modifyOrDeleteItinerary(tourist, "delete");
                         break;
                 }
-                if (!isValidItinerary(tourist.getItinerary())) {
+                if (!isValidItinerary(tourist)) {
                     continue;
                 }
+                System.out.println("Valid itinerary.");
                 if (itineraryAction.equals("c")) {
                     break;
                 }
@@ -266,28 +269,58 @@ public class Main {
         } while (true);
     }
 
-    private static boolean isValidItinerary(List<TouristItinerary> nonBlockingItineraries) {
+    private static boolean isValidItinerary(Tourist tourist) {
         // follow the prerequisite chain
+        List<TouristItinerary> nonBlockingItineraries = tourist.getNonBlockingItineraries();
+        boolean validItinerary = true;
+        List<String> flightChainEndPoints = new ArrayList<>();
+        List<String> flightChainStartPoints = new ArrayList<>();
+        List<String> prerequisiteKeys = new ArrayList<>();
         for (TouristItinerary nonBlockingItinerary : nonBlockingItineraries) {
             TouristItinerary itinerary = nonBlockingItinerary;
+            flightChainEndPoints.add(itinerary.getFlight().getDestination());
             while (itinerary != null) {
                 if (itinerary.getPrerequisite() == null) {
+                    flightChainStartPoints.add(itinerary.getFlight().getOrigin());
                     if (!itinerary.getFlight().getOrigin().equals(itinerary.getTourist().getLocation()) &&
                             itinerary.getMission() == null) {
                         System.out.println(
                                 "*****Itinerary without prerequisite does not originate at tourist location, " +
                                         itinerary.getTourist().getLocation() + ". key=" + itinerary.getKey());
-                        return false;
+                        validItinerary = false;
                     }
-                } else if (!itinerary.getFlight().getOrigin().equals(itinerary.getPrerequisite().getFlight().getDestination())) {
-                    System.out.println(
-                            "*****Itinerary origin does not match prerequisite destination. key=" + itinerary.getKey());
-                    return false;
+                } else {
+                    if (!itinerary.getFlight().getOrigin().equals(itinerary.getPrerequisite().getFlight().getDestination())) {
+                        System.out.println(
+                                "*****Itinerary origin does not match prerequisite destination. key=" + itinerary.getKey());
+                        validItinerary = false;
+                    }
+                    if (prerequisiteKeys.contains(itinerary.getPrerequisite().getKey())) {
+                        System.out.println("*****Multiple itineraries have the same prerequisite. Prerequisite key=" + itinerary.getPrerequisite().getKey());
+                        validItinerary = false;
+                    }
+                    prerequisiteKeys.add(itinerary.getPrerequisite().getKey());
                 }
                 itinerary = itinerary.getPrerequisite();
             }
         }
-        return true;
+        int startPointsNotKerbin = 0;
+        for (String startPoint : flightChainStartPoints) {
+            if (!startPoint.equals("KERBIN")) {
+                startPointsNotKerbin++;
+                if (startPointsNotKerbin > 1) {
+                    System.out.println("*****Multiple flight chains start at location other than Kerbin. There should be more prerequisites here.");
+                    validItinerary = false;
+                }
+            }
+        }
+        for (String endPoint : flightChainEndPoints) {
+            if (!endPoint.equals("KERBIN")) {
+                System.out.println("*****Flight chain end point is not Kerbin.");
+                validItinerary = false;
+            }
+        }
+        return validItinerary;
     }
 
     private static void modifyOrDeleteItinerary(Tourist tourist, String mode) {
