@@ -32,7 +32,7 @@ public class Main {
             } else if (choice == VIEW_FLIGHTS) {
                 viewFlights();
             } else if (choice == TOURIST_ITINERARY) {
-                touristItinerary();
+                touristItinerary(null);
             } else if (choice == CREATE_MISSIONS) {
                 createMissions();
             } else if (choice == VIEW_MISSIONS) {
@@ -48,10 +48,16 @@ public class Main {
         Persister.write(database);
     }
 
-    private static void validateTouristItineraries() {
+    private static void validateTouristItineraries() throws FileNotFoundException {
         for (Tourist tourist : database.getTourists()) {
             System.out.println(String.format("Validating %s itinerary", tourist.getName()));
-            isValidItinerary(tourist);
+            if (!isValidItinerary(tourist)) {
+                System.out.println("Enter y to address this now");
+                String answer = input.nextLine();
+                if (answer.equals("y")) {
+                    touristItinerary(tourist);
+                }
+            }
         }
     }
 
@@ -229,18 +235,18 @@ public class Main {
         }
     }
 
-    private static void touristItinerary() throws FileNotFoundException {
+    private static void touristItinerary(Tourist tourist) throws FileNotFoundException {
+        boolean modeFromValidateAll = tourist != null;
         do {
-            Tourist tourist;
-            String name;
-            do {
+            String name = null;
+            while (tourist == null && !"c".equals(name)) {
                 if (!database.printTourists()) {
                     return;
                 }
                 System.out.println("Please select a tourist");
                 name = input.nextLine();
                 tourist = database.findTourist(name);
-            } while (tourist == null && !name.equals("c"));
+            }
             if (tourist == null) {
                 return;
             }
@@ -271,9 +277,14 @@ public class Main {
                     continue;
                 }
                 if (itineraryAction.equals("c")) {
-                    break;
+                    if (modeFromValidateAll) {
+                        return;
+                    } else {
+                        break;
+                    }
                 }
             } while (true);
+            tourist = null;
         } while (true);
     }
 
