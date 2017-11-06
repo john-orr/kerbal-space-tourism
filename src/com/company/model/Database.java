@@ -8,12 +8,14 @@ public class Database {
     private List<Tourist> tourists;
     private List<Flight> flights;
     private List<Mission> missions;
+    private List<Vessel> vessels;
     private static final String COLUMN_FORMAT = "%-15s| ";
 
-    public Database(List<Tourist> tourists, List<Flight> flights) {
+    public Database(List<Tourist> tourists, List<Flight> flights, List<Vessel> vessels) {
         this.tourists = tourists;
         this.flights = flights;
         this.missions = new ArrayList<>();
+        this.vessels = vessels;
     }
 
     public List<Tourist> getTourists() {
@@ -240,7 +242,7 @@ public class Database {
                     .append(tableCell(mission.getFlight().getOrigin()))
                     .append(tableCell(mission.getFlight().getDestination()))
                     .append(tableCell(mission.getFlight().getFlyby()))
-                    .append(tableCell(mission.getVessel()))
+                    .append(tableCell(mission.getVessel().getName()))
                     .append(tableCell(mission.getStatus()));
             for (TouristItinerary passengerItinerary : mission.getPassengerItineraries()) {
                 output.append(passengerItinerary.getTourist().getName()).append("\t");
@@ -255,6 +257,15 @@ public class Database {
         this.missions.remove(mission);
         removeItineraries(mission.getPassengerItineraries());
         mission.deletePassengerItineraries();
+        updateVesselLocation(mission.getVessel(), mission.getFlight().getDestination());
+    }
+
+    private void updateVesselLocation(Vessel vessel, String location) {
+        if (location.equals("KERBIN")) {
+            this.vessels.remove(vessel);
+        } else {
+            vessel.setLocation(location);
+        }
     }
 
     public void cancelMission(Mission mission) {
@@ -264,6 +275,7 @@ public class Database {
             touristItinerary.getTourist().setLocation(touristItinerary.getFlight().getOrigin());
         }
         mission.deletePassengerItineraries();
+        updateVesselLocation(mission.getVessel(), mission.getFlight().getOrigin());
     }
 
     private void removeItineraries(List<TouristItinerary> touristItineraries) {
@@ -288,5 +300,46 @@ public class Database {
             }
         }
         return String.format("%03d", keyGen + 1);
+    }
+
+    public List<Vessel> getVessels() {
+        return vessels;
+    }
+
+    public Vessel findVessel(String name) {
+        for (Vessel vessel : vessels) {
+            if (vessel.getName().equals(name)) {
+                return vessel;
+            }
+        }
+        return null;
+    }
+
+    public List<String> printAvailableVessels(Flight flight) {
+        List<String> availableVessels = new ArrayList<>();
+        StringBuilder output = new StringBuilder("AVAILABLE VESSELS\n");
+        for (Vessel vessel : vessels) {
+            if (vessel.getLocation().equals(flight.getOrigin())
+                    && vessel.getCapacity() == flight.getCapacity()) {
+                availableVessels.add(vessel.getName());
+                output.append(vessel.getName()).append("\n");
+            }
+        }
+        if (!availableVessels.isEmpty()) {
+            System.out.println(output.toString());
+        }
+        return availableVessels;
+    }
+
+    public boolean createVessel(Vessel vessel) {
+        if (vessel == null) {
+            return true;
+        }
+        if (vessels.contains(vessel)) {
+            System.out.println("Vessel already exists");
+            return false;
+        }
+        vessels.add(vessel);
+        return true;
     }
 }

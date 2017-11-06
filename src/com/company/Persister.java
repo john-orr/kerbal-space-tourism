@@ -14,6 +14,17 @@ class Persister {
         writeFlights(database.getFlights());
         writeTouristItinerary(database.getTourists());
         writeMissions(database.getMissions());
+        writeVessels(database.getVessels());
+    }
+
+    private static void writeVessels(List<Vessel> vessels) throws FileNotFoundException {
+        PrintWriter writer = new PrintWriter(new File("database/vessels.csv"));
+        writer.println("H,NAME,LOCATION,CAPACITY");
+        for (Vessel vessel : vessels) {
+            writer.println("D," + vessel.getName() + "," + vessel.getLocation() + "," + vessel.getCapacity());
+        }
+        writer.flush();
+        writer.close();
     }
 
     private static void writeMissions(List<Mission> missions) throws FileNotFoundException {
@@ -22,7 +33,7 @@ class Persister {
         for (Mission mission : missions) {
             writer.println(
                     "D," + mission.getKey() + "," + mission.getFlight().getKey() + "," + mission
-                            .getVessel() + "," + mission.getStatus());
+                            .getVessel().getName() + "," + mission.getStatus());
         }
         writer.flush();
         writer.close();

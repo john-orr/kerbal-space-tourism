@@ -8,7 +8,7 @@ public class Mission extends Entity implements Comparable<Mission> {
 
     private String key;
     private Flight flight;
-    private String vessel;
+    private Vessel vessel;
     private String status;
     private List<TouristItinerary> passengerItineraries = new ArrayList<>();
 
@@ -16,10 +16,10 @@ public class Mission extends Entity implements Comparable<Mission> {
         this.flight = flight;
     }
 
-    public Mission(String[] data, Flight flight) {
+    public Mission(String[] data, Flight flight, Vessel vessel) {
         this.key = data[1];
         this.flight = flight;
-        this.vessel = data[3];
+        this.vessel = vessel;
         this.status = data[4];
     }
 
@@ -35,11 +35,11 @@ public class Mission extends Entity implements Comparable<Mission> {
         return flight;
     }
 
-    public String getVessel() {
+    public Vessel getVessel() {
         return vessel;
     }
 
-    public void setVessel(String vessel) {
+    public void setVessel(Vessel vessel) {
         this.vessel = vessel;
     }
 

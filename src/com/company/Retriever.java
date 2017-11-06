@@ -2,10 +2,7 @@ package com.company;
 
 import com.company.model.*;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.*;
 
 class Retriever {
@@ -14,10 +11,30 @@ class Retriever {
         List<Tourist> tourists = readTourists();
         List<Flight> flights = readFlights();
         Collections.sort(flights);
-        Database database = new Database(tourists, flights);
+        List<Vessel> vessels = readVessels();
+        Database database = new Database(tourists, flights, vessels);
         buildMissions(database);
         buildItinerary(database);
         return database;
+    }
+
+    private static List<Vessel> readVessels() throws IOException {
+        BufferedReader reader = new BufferedReader(new FileReader(new File("database/vessels.csv")));
+        String line;
+        List<Vessel> vessels = new ArrayList<>();
+        while ((line = reader.readLine()) != null) {
+            try {
+                String[] data = line.split(",");
+                if (data[0].equals("H")) {
+                    continue;
+                }
+                vessels.add(new Vessel(data));
+            } catch (Exception e) {
+                System.out.println("Error reading line " + line);
+                throw e;
+            }
+        }
+        return vessels;
     }
 
     private static void buildMissions(Database database) throws IOException {
@@ -30,7 +47,8 @@ class Retriever {
                     continue;
                 }
                 Flight flight = database.findFlight(data[2]);
-                Mission mission = new Mission(data, flight);
+                Vessel vessel = database.findVessel(data[3]);
+                Mission mission = new Mission(data, flight, vessel);
                 database.addMission(mission);
             } catch (Exception e) {
                 System.out.println("Error reading line " + line);

@@ -124,6 +124,7 @@ public class Main {
             case "ACTIVE":
                 System.out.println("Mission " + mission.getKey() + " started.");
                 mission.setStatus(status);
+                mission.getVessel().setLocation(null);
                 Collections.sort(database.getMissions());
                 break;
             case "CANCELLED":
@@ -213,16 +214,37 @@ public class Main {
                         }
                     }
                     mission.setStatus("READY");
-                    System.out.println("Enter vessel name");
-                    String vessel = input.nextLine();
-                    if (vessel.equals("c")) {
+                    Vessel vessel;
+                    if (flight.getOrigin().equals("KERBIN")) {
+                        do {
+                            System.out.println("Enter vessel name");
+                            String vesselName = input.nextLine();
+                            vessel = vesselName.equals("c") ? null : new Vessel(vesselName, "KERBIN", flight.getCapacity());
+                        } while (!database.createVessel(vessel));
+                    } else {
+                        String vesselName;
+                        List<String> availableVessels;
+                        do {
+                            availableVessels = database.printAvailableVessels(flight);
+                            if (!availableVessels.isEmpty()) {
+                                System.out.println("Enter vessel name");
+                                vesselName = input.nextLine();
+                            } else {
+                                System.out.println("No available vessels");
+                                vesselName = "c";
+                            }
+                        } while (!(availableVessels.contains(vesselName.toUpperCase()) || vesselName.equals("c")));
+                        vessel = database.findVessel(vesselName);
+                    }
+                    if (vessel == null) {
                         System.out.println("Mission creation cancelled");
                         continue;
                     }
-                    mission.setVessel(vessel.toUpperCase());
+                    mission.setVessel(vessel);
+                    vessel.readyForDeparture();
                     for (TouristItinerary touristItinerary : mission.getPassengerItineraries()) {
                         touristItinerary.setMission(mission);
-                        touristItinerary.getTourist().setLocation(mission.getVessel());
+                        touristItinerary.getTourist().setLocation(mission.getVessel().getName());
                     }
                     database.insertMission(mission);
                 }
