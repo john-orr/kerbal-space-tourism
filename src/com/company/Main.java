@@ -166,6 +166,9 @@ public class Main {
                 }
             }
             if (mission.getPassengerItineraries().size() >= flight.getCapacity()) {
+                if (database.getAvailableVessels(flight).isEmpty() && !flight.getOrigin().equals("KERBIN")) {
+                    continue;
+                }
                 numFlightsReady++;
                 StringBuilder output =
                         new StringBuilder("Flight ").append(flight.getKey()).append(" from ")
@@ -226,13 +229,8 @@ public class Main {
                         List<String> availableVessels;
                         do {
                             availableVessels = database.printAvailableVessels(flight);
-                            if (!availableVessels.isEmpty()) {
-                                System.out.println("Enter vessel name");
-                                vesselName = input.nextLine();
-                            } else {
-                                System.out.println("No available vessels");
-                                vesselName = "c";
-                            }
+                            System.out.println("Enter vessel name");
+                            vesselName = input.nextLine();
                         } while (!(availableVessels.contains(vesselName.toUpperCase()) || vesselName.equals("c")));
                         vessel = database.findVessel(vesselName);
                     }

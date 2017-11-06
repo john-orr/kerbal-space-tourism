@@ -315,15 +315,23 @@ public class Database {
         return null;
     }
 
-    public List<String> printAvailableVessels(Flight flight) {
-        List<String> availableVessels = new ArrayList<>();
-        StringBuilder output = new StringBuilder("AVAILABLE VESSELS\n");
+    public List<Vessel> getAvailableVessels(Flight flight) {
+        List<Vessel> availableVessels = new ArrayList<>();
         for (Vessel vessel : vessels) {
             if (vessel.getLocation().equals(flight.getOrigin())
                     && vessel.getCapacity() == flight.getCapacity()) {
-                availableVessels.add(vessel.getName());
-                output.append(vessel.getName()).append("\n");
+                availableVessels.add(vessel);
             }
+        }
+        return availableVessels;
+    }
+
+    public List<String> printAvailableVessels(Flight flight) {
+        List<String> availableVessels = new ArrayList<>();
+        StringBuilder output = new StringBuilder("AVAILABLE VESSELS\n");
+        for (Vessel vessel : getAvailableVessels(flight)) {
+            availableVessels.add(vessel.getName());
+            output.append(vessel.getName()).append("\n");
         }
         if (!availableVessels.isEmpty()) {
             System.out.println(output.toString());
