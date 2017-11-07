@@ -318,7 +318,7 @@ public class Database {
     public List<Vessel> getAvailableVessels(Flight flight) {
         List<Vessel> availableVessels = new ArrayList<>();
         for (Vessel vessel : vessels) {
-            if (vessel.getLocation().equals(flight.getOrigin())
+            if (flight.getOrigin().equals(vessel.getLocation())
                     && vessel.getCapacity() == flight.getCapacity()) {
                 availableVessels.add(vessel);
             }

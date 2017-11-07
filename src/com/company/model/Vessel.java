@@ -8,7 +8,9 @@ public class Vessel extends Entity {
 
     public Vessel(String[] data) {
         this.name = data[1];
-        this.location = data[2];
+        if (!data[2].equals("null")) {
+            this.location = data[2];
+        }
         this.capacity = Integer.parseInt(data[3]);
     }
 
