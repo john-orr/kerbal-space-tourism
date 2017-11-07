@@ -232,7 +232,7 @@ public class Main {
                             System.out.println("Enter vessel name");
                             vesselName = input.nextLine();
                         } while (!(availableVessels.contains(vesselName.toUpperCase()) || vesselName.equals("c")));
-                        vessel = database.findVessel(vesselName);
+                        vessel = database.findVessel(vesselName.toUpperCase());
                     }
                     if (vessel == null) {
                         System.out.println("Mission creation cancelled");
