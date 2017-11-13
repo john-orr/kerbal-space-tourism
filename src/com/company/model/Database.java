@@ -146,7 +146,7 @@ public class Database {
     }
 
     private String tableCell(Object content) {
-        return String.format(COLUMN_FORMAT, content);
+        return String.format(COLUMN_FORMAT, content == null ? "" : content);
     }
 
     public void insertItinerary(Tourist itineraryTourist, Flight flight, TouristItinerary prerequisite) {
@@ -181,7 +181,7 @@ public class Database {
             if (touristItinerary.getPrerequisite() != null) {
                 output.append(tableCell(touristItinerary.getPrerequisite().getKey()));
             } else {
-                output.append(tableCell("null"));
+                output.append(tableCell(null));
             }
             output.append("\n");
         }
