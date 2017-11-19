@@ -146,6 +146,14 @@ public class Main {
                         tourist.unFlag();
                     }
                 }
+                String createMissions;
+                do {
+                    System.out.println("Check for and create new missions? [y/n]");
+                    createMissions = input.nextLine();
+                } while (!(createMissions.equals("y") || createMissions.equals("n")));
+                if (createMissions.equals("y")) {
+                    createMissions();
+                }
                 break;
         }
     }
