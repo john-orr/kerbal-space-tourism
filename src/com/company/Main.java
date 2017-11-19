@@ -432,12 +432,17 @@ public class Main {
             System.out.println("Add new flight to itinerary");
             TouristItinerary prerequisite = null;
             if (!tourist.getItinerary().isEmpty()) {
+                TouristItinerary suggestedItinerary = tourist.getMostRecentItinerary();
                 String itineraryKey;
                 do {
-                    System.out.println(
-                            "Please enter the key of the prerequisite itinerary (n if none)");
+                    System.out.println("Please enter the key of the prerequisite itinerary (n if none, y if " +
+                            suggestedItinerary.getKey() + ")");
                     itineraryKey = input.nextLine();
-                    prerequisite = tourist.findItinerary(itineraryKey);
+                    if (itineraryKey.equals("y")) {
+                        prerequisite = suggestedItinerary;
+                    } else {
+                        prerequisite = tourist.findItinerary(itineraryKey);
+                    }
                 } while (prerequisite == null && !itineraryKey.equals("n") && !itineraryKey.equals("c"));
                 if (itineraryKey.equals("c")) {
                     break;

@@ -41,6 +41,10 @@ public class Tourist extends Entity implements Comparable<Tourist> {
         return itinerary;
     }
 
+    public TouristItinerary getMostRecentItinerary() {
+        return itinerary.get(itinerary.size() - 1);
+    }
+
     public List<TouristItinerary> getNonBlockingItineraries() {
         List<TouristItinerary> nonBlockingItineraries = new ArrayList<>();
         List<String> blockingKeys = new ArrayList<>();
