@@ -515,12 +515,29 @@ public class Main {
     }
 
     private static void addNewTourist() throws FileNotFoundException {
-        System.out.println("Please enter the name of the new tourist");
-        String name = input.nextLine();
-        if (name.equals("c")) {
-            return;
-        }
-        database.insertTourist(new Tourist(name));
+        do {
+            System.out.println("Please enter the name of the new tourist");
+            String name = input.nextLine();
+            if (name.equals("c")) {
+                return;
+            }
+            Tourist newTourist = new Tourist(name);
+            database.insertTourist(newTourist);
+            String choice;
+            do {
+                System.out.println("Tourist created. What next?");
+                System.out.println("\t1. Create itinerary for new tourist");
+                System.out.println("\t2. Create another tourist");
+                System.out.println("\tc. Exit to menu");
+                choice = input.nextLine();
+            } while (!(choice.equals("1") || choice.equals("2") || choice.equals("c")));
+            if (choice.equals("1")) {
+                touristItinerary(newTourist);
+            } else if (choice.equals("c")) {
+                return;
+            }
+            // choice 2 continues loop
+        } while (true);
     }
 
     private static MenuOption menu() {
