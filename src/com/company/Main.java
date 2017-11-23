@@ -197,11 +197,15 @@ public class Main {
                 } while (!(createMission.equals("y") || createMission.equals("n")));
                 if (createMission.equals("y")) {
                     boolean showItineraries = false;
+                    boolean showBookings = false;
                     while (mission.getPassengerItineraries().size() > flight.getCapacity()) {
                         if (showItineraries) {
                             for (TouristItinerary passengerItinerary : mission.getPassengerItineraries()) {
                                 database.printTouristItinerary(passengerItinerary.getTourist());
                             }
+                        }
+                        if (showBookings) {
+                            database.printFlightBookings(true);
                         }
                         System.out.println("Who should be left behind?");
                         for (TouristItinerary passengerItinerary : mission.getPassengerItineraries()) {
@@ -210,11 +214,18 @@ public class Main {
                         if (!showItineraries) {
                             System.out.println("Enter i if you want to see their itineraries");
                         }
+                        if (!showBookings) {
+                            System.out.println("Enter b if you want to see flight bookings");
+                        }
                         String name = input.nextLine();
                         showItineraries = false;
+                        showBookings = false;
                         switch (name) {
                             case "i":
                                 showItineraries = true;
+                                break;
+                            case "b":
+                                showBookings = true;
                                 break;
                             case "c":
                                 System.out.println("Mission creation cancelled");

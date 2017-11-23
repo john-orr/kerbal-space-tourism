@@ -63,7 +63,7 @@ public class Flight extends Entity implements Comparable<Flight> {
         List<TouristItinerary> readyCustomerItineraries = new ArrayList<>();
         for (TouristItinerary customerItinerary : customerItineraries) {
             if (customerItinerary.getMission() == null
-                    && (includePrerequisites || customerItinerary.getPrerequisite() == null)) {
+                    && (customerItinerary.getPrerequisite() == null || includePrerequisites)) {
                 readyCustomerItineraries.add(customerItinerary);
             }
         }

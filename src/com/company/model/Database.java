@@ -138,7 +138,11 @@ public class Database {
                     .append(tableCell(flight.getCapacity()))
                     .append(tableCell(bookingsWithoutMissions.size()));
             for (TouristItinerary customerItinerary : bookingsWithoutMissions) {
-                output.append(customerItinerary.getTourist().getName()).append("\t");
+                output.append(customerItinerary.getTourist().getName());
+                if (customerItinerary.getPrerequisite() != null) {
+                    output.append("*");
+                }
+                output.append("\t");
             }
             output.append("\n");
         }
