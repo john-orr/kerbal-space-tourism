@@ -139,8 +139,10 @@ public class Database {
                     .append(tableCell(bookingsWithoutMissions.size()));
             for (TouristItinerary customerItinerary : bookingsWithoutMissions) {
                 output.append(customerItinerary.getTourist().getName());
-                if (customerItinerary.getPrerequisite() != null) {
+                TouristItinerary itinerary = customerItinerary;
+                while (itinerary.getPrerequisite() != null) {
                     output.append("*");
+                    itinerary = itinerary.getPrerequisite();
                 }
                 output.append("\t");
             }
