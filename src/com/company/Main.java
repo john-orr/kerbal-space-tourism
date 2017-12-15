@@ -19,7 +19,7 @@ public class Main {
     private static Database database;
 
     public static void main(String[] args) throws SQLException {
-        Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/kerbaltourismdb?userSSL=false", "root", "pa55word!1");
+        Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/kerbaltourism?userSSL=false", "root", "pa55word!1");
         Statement statement = conn.createStatement();
         init(statement);
         do {
