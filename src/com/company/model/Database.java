@@ -74,9 +74,9 @@ public class Database {
         return flights;
     }
 
-    public Flight findFlight(String key) {
+    public Flight findFlight(int id) {
         for (Flight flight : flights) {
-            if (flight.getKey().equals(key)) {
+            if (flight.getId() == id) {
                 return flight;
             }
         }
@@ -88,7 +88,7 @@ public class Database {
             System.out.println("Flight already exists");
             return;
         }
-        newFlight.setKey(keyGen(flights));
+        newFlight.setId(idGen(flights));
         this.flights.add(newFlight);
         Collections.sort(flights);
     }
@@ -97,31 +97,31 @@ public class Database {
         printFlights(null);
     }
 
-    private List<String> printFlights(List<String> origins) {
-        List<String> flightKeys = new ArrayList<>();
+    private List<Integer> printFlights(List<String> origins) {
+        List<Integer> flightIds = new ArrayList<>();
         StringBuilder output = new StringBuilder("FLIGHTS\n")
-                .append(tableCell("KEY"))
+                .append(tableCell("ID"))
                 .append(tableCell("ORIGIN"))
                 .append(tableCell("DESTINATION"))
                 .append(tableCell("FLYBY")).append("\n");
         for (Flight flight : flights) {
             if (origins == null || origins.contains(flight.getOrigin())) {
-                output.append(tableCell(flight.getKey()))
+                output.append(tableCell(flight.getId()))
                         .append(tableCell(flight.getOrigin()))
                         .append(tableCell(flight.getDestination()))
                         .append(tableCell(flight.getFlyby())).append("\n");
-                flightKeys.add(flight.getKey());
+                flightIds.add(flight.getId());
             }
         }
-        if (!flightKeys.isEmpty()) {
+        if (!flightIds.isEmpty()) {
             System.out.println(output.toString());
         }
-        return flightKeys;
+        return flightIds;
     }
 
     public void printFlightBookings(boolean includePrerequisites) {
         StringBuilder output = new StringBuilder("FLIGHTS\n")
-                .append(tableCell("KEY"))
+                .append(tableCell("ID"))
                 .append(tableCell("ORIGIN"))
                 .append(tableCell("DESTINATION"))
                 .append(tableCell("FLYBY"))
@@ -131,7 +131,7 @@ public class Database {
         for (Flight flight : flights) {
             List<TouristItinerary> bookingsWithoutMissions =
                     flight.getBookingsWithoutMissions(includePrerequisites);
-            output.append(tableCell(flight.getKey()))
+            output.append(tableCell(flight.getId()))
                     .append(tableCell(flight.getOrigin()))
                     .append(tableCell(flight.getDestination()))
                     .append(tableCell(flight.getFlyby()))
@@ -160,8 +160,8 @@ public class Database {
         for (Tourist tourist : tourists) {
             touristItineraries.addAll(tourist.getItinerary());
         }
-        String key = keyGen(touristItineraries);
-        TouristItinerary touristItinerary = new TouristItinerary(key, itineraryTourist, flight, prerequisite);
+        int id = idGen(touristItineraries);
+        TouristItinerary touristItinerary = new TouristItinerary(id, itineraryTourist, flight, prerequisite);
         itineraryTourist.addToItinerary(touristItinerary);
         flight.addCustomerItinerary(touristItinerary);
     }
@@ -172,20 +172,20 @@ public class Database {
             return;
         }
         StringBuilder output = new StringBuilder("ITINERARY\n")
-                .append(tableCell("I.KEY"))
+                .append(tableCell("I.ID"))
                 .append(tableCell("NAME"))
                 .append(tableCell("ORIGIN"))
                 .append(tableCell("DESTINATION"))
                 .append(tableCell("FLYBY"))
                 .append(tableCell("PREREQUISITE")).append("\n");
         for (TouristItinerary touristItinerary : tourist.getItinerary()) {
-            output.append(tableCell(touristItinerary.getKey()))
+            output.append(tableCell(touristItinerary.getId()))
                     .append(tableCell(tourist.getName()))
                     .append(tableCell(touristItinerary.getFlight().getOrigin()))
                     .append(tableCell(touristItinerary.getFlight().getDestination()))
                     .append(tableCell(touristItinerary.getFlight().getFlyby()));
             if (touristItinerary.getPrerequisite() != null) {
-                output.append(tableCell(touristItinerary.getPrerequisite().getKey()));
+                output.append(tableCell(touristItinerary.getPrerequisite().getId()));
             } else {
                 output.append(tableCell(null));
             }
@@ -194,7 +194,7 @@ public class Database {
         System.out.println(output.toString());
     }
 
-    public List<String> printAvailableFlights(Tourist tourist, TouristItinerary prerequisite) {
+    public List<Integer> printAvailableFlights(Tourist tourist, TouristItinerary prerequisite) {
         List<String> origins = new ArrayList<>();
         if (prerequisite == null) {
             origins.add("KERBIN");
@@ -207,9 +207,9 @@ public class Database {
         return printFlights(origins);
     }
 
-    public Mission findMission(String missionKey) {
+    public Mission findMission(Integer missionId) {
         for (Mission mission : missions) {
-            if (mission.getKey().equals(missionKey)) {
+            if (mission.getId() == missionId) {
                 return mission;
             }
         }
@@ -221,7 +221,7 @@ public class Database {
     }
 
     public void insertMission(Mission newMission) {
-        newMission.setKey(keyGen(missions));
+        newMission.setId(idGen(missions));
         addMission(newMission);
     }
 
@@ -236,7 +236,7 @@ public class Database {
             return false;
         }
         StringBuilder output = new StringBuilder("MISSIONS\n")
-                .append(tableCell("KEY"))
+                .append(tableCell("ID"))
                 .append(tableCell("ORIGIN"))
                 .append(tableCell("DESTINATION"))
                 .append(tableCell("FLYBY"))
@@ -244,7 +244,7 @@ public class Database {
                 .append(tableCell("STATUS"))
                 .append("PASSENGERS").append("\n");
         for (Mission mission : missions) {
-            output.append(tableCell(mission.getKey()))
+            output.append(tableCell(mission.getId()))
                     .append(tableCell(mission.getFlight().getOrigin()))
                     .append(tableCell(mission.getFlight().getDestination()))
                     .append(tableCell(mission.getFlight().getFlyby()))
@@ -297,15 +297,12 @@ public class Database {
         }
     }
 
-    private String keyGen(Collection<? extends Entity> entities) {
-        int keyGen = 0;
-        for (Entity entity : entities) {
-            int entityKey = Integer.parseInt(entity.getKey());
-            if (entityKey > keyGen) {
-                keyGen = entityKey;
-            }
+    private int idGen(Collection<? extends EntityWithNumericId> entities) {
+        int idGen = 0;
+        for (EntityWithNumericId entity : entities) {
+            idGen = Math.max(idGen, entity.getId());
         }
-        return String.format("%03d", keyGen + 1);
+        return idGen + 1;
     }
 
     public List<Vessel> getVessels() {

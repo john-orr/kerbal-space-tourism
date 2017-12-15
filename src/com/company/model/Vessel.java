@@ -1,27 +1,15 @@
 package com.company.model;
 
-public class Vessel extends Entity {
+public class Vessel {
 
     private String name;
     private String location;
     private int capacity;
 
-    public Vessel(String[] data) {
-        this.name = data[1];
-        if (!data[2].equals("null")) {
-            this.location = data[2];
-        }
-        this.capacity = Integer.parseInt(data[3]);
-    }
-
-    public Vessel(String vesselName, String location, int capacity) {
-        this.name = vesselName.toUpperCase();
+    public Vessel(String name, String location, int capacity) {
+        this.name = name;
         this.location = location;
         this.capacity = capacity;
-    }
-
-    @Override String getKey() {
-        return getName();
     }
 
     public String getName() {

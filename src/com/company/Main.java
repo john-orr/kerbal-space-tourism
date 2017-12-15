@@ -4,6 +4,7 @@ import com.company.model.*;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -16,8 +17,10 @@ public class Main {
     private static Scanner input = new Scanner(System.in);
     private static Database database;
 
-    public static void main(String[] args) throws IOException {
-        init();
+    public static void main(String[] args) throws IOException, SQLException {
+        Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/kerbaltourismdb?userSSL=false", "root", "pa55word!1");
+        Statement statement = conn.createStatement();
+        init(statement);
         do {
             MenuOption choice = menu();
             System.out.println("Operation '" + choice.getText() + "' selected");
@@ -46,6 +49,8 @@ public class Main {
             }
         } while (true);
         Persister.write(database);
+        statement.close();
+        conn.close();
     }
 
     private static void validateTouristItineraries() throws FileNotFoundException {
@@ -81,12 +86,13 @@ public class Main {
         Mission mission;
         do {
             System.out.println("Please select a mission");
-            String missionKey = input.nextLine();
-            if (missionKey.equals("c")) {
+            String missionIdInput = input.nextLine();
+            if (missionIdInput.equals("c")) {
                 System.out.println("Update mission cancelled");
                 return;
             }
-            mission = database.findMission(missionKey);
+            int missionId = parseInt(missionIdInput);
+            mission = database.findMission(missionId);
         } while (mission == null);
         String status;
         if (mission.getStatus().equals("ACTIVE")) {
@@ -122,7 +128,7 @@ public class Main {
         }
         switch (status) {
             case "ACTIVE":
-                System.out.println("Mission " + mission.getKey() + " started.");
+                System.out.println("Mission " + mission.getId() + " started.");
                 mission.setStatus(status);
                 mission.getVessel().setLocation(null);
                 Collections.sort(database.getMissions());
@@ -179,7 +185,7 @@ public class Main {
                 }
                 numFlightsReady++;
                 StringBuilder output =
-                        new StringBuilder("Flight ").append(flight.getKey()).append(" from ")
+                        new StringBuilder("Flight ").append(flight.getId()).append(" from ")
                                 .append(flight.getOrigin()).append(" to ")
                                 .append(flight.getDestination());
                 if (flight.getFlyby() != null) {
@@ -333,7 +339,7 @@ public class Main {
         boolean validItinerary = true;
         List<String> flightChainEndPoints = new ArrayList<>();
         List<String> flightChainStartPoints = new ArrayList<>();
-        List<String> prerequisiteKeys = new ArrayList<>();
+        List<Integer> prerequisiteIds = new ArrayList<>();
         for (TouristItinerary nonBlockingItinerary : nonBlockingItineraries) {
             TouristItinerary itinerary = nonBlockingItinerary;
             flightChainEndPoints.add(itinerary.getFlight().getDestination());
@@ -344,20 +350,20 @@ public class Main {
                             itinerary.getMission() == null) {
                         System.out.println(
                                 "*****Itinerary without prerequisite does not originate at tourist location, " +
-                                        itinerary.getTourist().getLocation() + ". key=" + itinerary.getKey());
+                                        itinerary.getTourist().getLocation() + ". id=" + itinerary.getId());
                         validItinerary = false;
                     }
                 } else {
                     if (!itinerary.getFlight().getOrigin().equals(itinerary.getPrerequisite().getFlight().getDestination())) {
                         System.out.println(
-                                "*****Itinerary origin does not match prerequisite destination. key=" + itinerary.getKey());
+                                "*****Itinerary origin does not match prerequisite destination. id=" + itinerary.getId());
                         validItinerary = false;
                     }
-                    if (prerequisiteKeys.contains(itinerary.getPrerequisite().getKey())) {
-                        System.out.println("*****Multiple itineraries have the same prerequisite. Prerequisite key=" + itinerary.getPrerequisite().getKey());
+                    if (prerequisiteIds.contains(itinerary.getPrerequisite().getId())) {
+                        System.out.println("*****Multiple itineraries have the same prerequisite. Prerequisite id=" + itinerary.getPrerequisite().getId());
                         validItinerary = false;
                     }
-                    prerequisiteKeys.add(itinerary.getPrerequisite().getKey());
+                    prerequisiteIds.add(itinerary.getPrerequisite().getId());
                 }
                 itinerary = itinerary.getPrerequisite();
             }
@@ -389,16 +395,17 @@ public class Main {
         do {
             database.printTouristItinerary(tourist);
             TouristItinerary itinerary;
-            String itineraryKey;
+            String itineraryIdInput;
             do {
-                System.out.println("Please enter the key of the itinerary to " + mode);
-                itineraryKey = input.nextLine();
-                itinerary = tourist.findItinerary(itineraryKey);
+                System.out.println("Please enter the id of the itinerary to " + mode);
+                itineraryIdInput = input.nextLine();
+                int itineraryId = parseInt(itineraryIdInput);
+                itinerary = tourist.findItinerary(itineraryId);
                 if (itinerary != null && itinerary.getMission() != null) {
                     System.out.println("Action '" + mode + "' is not possible as a mission for this itinerary exists");
                     itinerary = null;
                 }
-            } while (itinerary == null && !itineraryKey.equals("c"));
+            } while (!(itinerary != null || itineraryIdInput.equals("c")));
             if (itinerary == null) {
                 return;
             }
@@ -426,18 +433,19 @@ public class Main {
     }
 
     private static void modifyItinerary(Tourist tourist, TouristItinerary itinerary) {
-        String itineraryKey;
+        String itineraryIdInput;
         TouristItinerary prerequisite;
         do {
-            System.out.println("Enter key of the prerequisite itinerary (n if none)");
-            itineraryKey = input.nextLine();
-            prerequisite = tourist.findItinerary(itineraryKey);
+            System.out.println("Enter id of the prerequisite itinerary (n if none)");
+            itineraryIdInput = input.nextLine();
+            int itineraryId = parseInt(itineraryIdInput);
+            prerequisite = tourist.findItinerary(itineraryId);
             if (prerequisite != null &&
                     !itinerary.getFlight().getOrigin().equals(prerequisite.getFlight().getDestination())) {
                 System.out.println("Seems like an invalid prerequisite");
                 prerequisite = null;
             }
-        } while (prerequisite == null && !itineraryKey.equals("n"));
+        } while (prerequisite == null && !itineraryIdInput.equals("n"));
         itinerary.setPrerequisite(prerequisite);
     }
 
@@ -452,36 +460,38 @@ public class Main {
             TouristItinerary prerequisite = null;
             if (!tourist.getItinerary().isEmpty()) {
                 TouristItinerary suggestedItinerary = tourist.getMostRecentItinerary();
-                String itineraryKey;
+                String itineraryId;
                 do {
-                    System.out.println("Please enter the key of the prerequisite itinerary (n if none, y if " +
-                            suggestedItinerary.getKey() + ")");
-                    itineraryKey = input.nextLine();
-                    if (itineraryKey.equals("y")) {
+                    System.out.println("Please enter the id of the prerequisite itinerary (n if none, y if " +
+                            suggestedItinerary.getId() + ")");
+                    itineraryId = input.nextLine();
+                    if (itineraryId.equals("y")) {
                         prerequisite = suggestedItinerary;
                     } else {
-                        prerequisite = tourist.findItinerary(itineraryKey);
+                        prerequisite = tourist.findItinerary(parseInt(itineraryId));
                     }
-                } while (prerequisite == null && !itineraryKey.equals("n") && !itineraryKey.equals("c"));
-                if (itineraryKey.equals("c")) {
+                } while (!(prerequisite != null || itineraryId.equals("n") || itineraryId.equals("c")));
+                if (itineraryId.equals("c")) {
                     break;
                 }
             }
-            List<String> availableFlightKeys;
-            String flightKey = null;
+            List<Integer> availableFlightIds;
+            String flightIdInput = null;
+            int flightId = 0;
             do {
-                if (flightKey != null) {
-                    System.out.println("Invalid flight key");
+                if (flightIdInput != null) {
+                    System.out.println("Invalid flight id");
                 }
-                availableFlightKeys = database.printAvailableFlights(tourist, prerequisite);
-                if (availableFlightKeys.isEmpty()) {
+                availableFlightIds = database.printAvailableFlights(tourist, prerequisite);
+                if (availableFlightIds.isEmpty()) {
                     System.out.println("No available flights");
                     break;
                 }
-                System.out.println("Please enter the key of the flight to add to the itinerary");
-                flightKey = input.nextLine();
-            } while (!(availableFlightKeys.contains(flightKey) || flightKey.equals("c")));
-            Flight flight = database.findFlight(flightKey);
+                System.out.println("Please enter the id of the flight to add to the itinerary");
+                flightIdInput = input.nextLine();
+                flightId = parseInt(flightIdInput);
+            } while (!(availableFlightIds.contains(flightId) || flightIdInput.equals("c")));
+            Flight flight = database.findFlight(flightId);
             if (flight == null) {
                 break;
             }
@@ -579,7 +589,15 @@ public class Main {
         } while (true);
     }
 
-    private static void init() throws IOException {
-        database = Retriever.read();
+    private static void init(Statement statement) throws SQLException, IOException {
+        database = Retriever.read(statement);
+    }
+
+    private static int parseInt(String numericString) {
+        if (numericString.matches("\\d+")) {
+            return Integer.parseInt(numericString);
+        } else {
+            return 0;
+        }
     }
 }

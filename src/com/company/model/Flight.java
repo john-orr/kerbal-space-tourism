@@ -3,9 +3,9 @@ package com.company.model;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Flight extends Entity implements Comparable<Flight> {
+public class Flight extends EntityWithNumericId implements Comparable<Flight> {
 
-    private String key;
+    private int id;
     private String origin;
     private String destination;
     private String flyby;
@@ -21,22 +21,20 @@ public class Flight extends Entity implements Comparable<Flight> {
         this.capacity = capacity;
     }
 
-    public Flight(String[] data) {
-        this.key = data[1];
-        this.origin = data[2];
-        this.destination = data[3];
-        if (!data[4].equals("null")) {
-            this.flyby = data[4];
-        }
-        this.capacity = Integer.parseInt(data[5]);
+    public Flight(int id, String origin, String destination, String flyby, int capacity) {
+        this.id = id;
+        this.origin = origin;
+        this.destination = destination;
+        this.flyby = flyby;
+        this.capacity = capacity;
     }
 
-    public String getKey() {
-        return key;
+    public int getId() {
+        return id;
     }
 
-    public void setKey(String key) {
-        this.key = key;
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getOrigin() {

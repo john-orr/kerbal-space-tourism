@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class Mission extends Entity implements Comparable<Mission> {
+public class Mission extends EntityWithNumericId implements Comparable<Mission> {
 
-    private String key;
+    private int id;
     private Flight flight;
     private Vessel vessel;
     private String status;
@@ -16,19 +16,19 @@ public class Mission extends Entity implements Comparable<Mission> {
         this.flight = flight;
     }
 
-    public Mission(String[] data, Flight flight, Vessel vessel) {
-        this.key = data[1];
+    public Mission(int id, Flight flight, Vessel vessel, String status) {
+        this.id = id;
         this.flight = flight;
         this.vessel = vessel;
-        this.status = data[4];
+        this.status = status;
     }
 
-    public String getKey() {
-        return key;
+    public int getId() {
+        return id;
     }
 
-    public void setKey(String key) {
-        this.key = key;
+    public void setId(int id) {
+        this.id = id;
     }
 
     public Flight getFlight() {
@@ -78,7 +78,7 @@ public class Mission extends Entity implements Comparable<Mission> {
     public boolean equals(Object o) {
         if (o instanceof Mission) {
             Mission that = (Mission) o;
-            return this.key.equals(that.key);
+            return this.id == that.id;
         }
         return false;
     }
@@ -87,7 +87,7 @@ public class Mission extends Entity implements Comparable<Mission> {
     public int compareTo(Mission that) {
         int comparison = this.status.compareTo(that.getStatus());
         if (comparison == 0) {
-            comparison = this.key.compareTo(that.key);
+            comparison = this.id - that.id;
         }
         return comparison;
     }

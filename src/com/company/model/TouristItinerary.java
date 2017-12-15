@@ -1,31 +1,31 @@
 package com.company.model;
 
-public class TouristItinerary extends Entity {
+public class TouristItinerary extends EntityWithNumericId {
 
-    private String key;
+    private int id;
     private Tourist tourist;
     private Flight flight;
     private TouristItinerary prerequisite;
     private Mission mission;
 
-    private TouristItinerary(String key, Tourist tourist, Flight flight, Mission mission, TouristItinerary prerequisite) {
-        this.key = key;
+    private TouristItinerary(int id, Tourist tourist, Flight flight, Mission mission, TouristItinerary prerequisite) {
+        this.id = id;
         this.tourist = tourist;
         this.flight = flight;
         this.mission = mission;
         this.prerequisite = prerequisite;
     }
 
-    public TouristItinerary(String key, Tourist tourist, Flight flight, Mission mission) {
-        this(key, tourist, flight, mission, null);
+    public TouristItinerary(int id, Tourist tourist, Flight flight, Mission mission) {
+        this(id, tourist, flight, mission, null);
     }
 
-    TouristItinerary(String key, Tourist tourist, Flight flight, TouristItinerary prerequisite) {
-        this(key, tourist, flight, null, prerequisite);
+    TouristItinerary(int id, Tourist tourist, Flight flight, TouristItinerary prerequisite) {
+        this(id, tourist, flight, null, prerequisite);
     }
 
-    public String getKey() {
-        return key;
+    public int getId() {
+        return id;
     }
 
     public Tourist getTourist() {
@@ -56,7 +56,7 @@ public class TouristItinerary extends Entity {
     public boolean equals(Object o) {
         if (o instanceof TouristItinerary) {
             TouristItinerary that = (TouristItinerary) o;
-            return this.key.equals(that.key);
+            return this.id ==  that.id;
         }
         return false;
     }

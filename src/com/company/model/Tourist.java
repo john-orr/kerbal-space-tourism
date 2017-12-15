@@ -3,7 +3,7 @@ package com.company.model;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Tourist extends Entity implements Comparable<Tourist> {
+public class Tourist implements Comparable<Tourist> {
 
     private String name;
     private String location;
@@ -15,13 +15,9 @@ public class Tourist extends Entity implements Comparable<Tourist> {
         this.location = "KERBIN";
     }
 
-    public Tourist(String[] data) {
-        this.name = data[1];
-        this.location = data[2];
-    }
-
-    public String getKey() {
-        return getName();
+    public Tourist(String name, String location) {
+        this.name = name;
+        this.location = location;
     }
 
     public String getName() {
@@ -47,23 +43,23 @@ public class Tourist extends Entity implements Comparable<Tourist> {
 
     public List<TouristItinerary> getNonBlockingItineraries() {
         List<TouristItinerary> nonBlockingItineraries = new ArrayList<>();
-        List<String> blockingKeys = new ArrayList<>();
+        List<Integer> blockingIds = new ArrayList<>();
         for (TouristItinerary touristItinerary : itinerary) {
             if (touristItinerary.getPrerequisite() != null) {
-                blockingKeys.add(touristItinerary.getPrerequisite().getKey());
+                blockingIds.add(touristItinerary.getPrerequisite().getId());
             }
         }
         for (TouristItinerary touristItinerary : itinerary) {
-            if (!blockingKeys.contains(touristItinerary.getKey())) {
+            if (!blockingIds.contains(touristItinerary.getId())) {
                 nonBlockingItineraries.add(touristItinerary);
             }
         }
         return nonBlockingItineraries;
     }
 
-    public TouristItinerary findItinerary(String itineraryKey) {
+    public TouristItinerary findItinerary(int itineraryId) {
         for (TouristItinerary touristItinerary : itinerary) {
-            if (touristItinerary.getKey().equals(itineraryKey)) {
+            if (touristItinerary.getId() == itineraryId) {
                 return touristItinerary;
             }
         }
