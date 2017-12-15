@@ -2,7 +2,6 @@ package com.company;
 
 import com.company.model.*;
 
-import java.io.*;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -10,7 +9,7 @@ import java.util.*;
 
 class Retriever {
 
-    static Database read(Statement statement) throws IOException, SQLException {
+    static Database read(Statement statement) throws SQLException {
         List<Tourist> tourists = readTourists(statement);
         List<Flight> flights = readFlights(statement);
         Collections.sort(flights);
@@ -55,20 +54,17 @@ class Retriever {
             int id = resultSet.getInt("ID");
             Tourist tourist = database.findTourist(resultSet.getString("TOURIST"));
             Flight flight = database.findFlight(resultSet.getInt("FLIGHTID"));
-            Integer prerequisite = resultSet.getInt("PREREQUISITE");
-            Integer missionId = resultSet.getInt("MISSIONID");
-            Mission mission = null;
-            if (missionId != null) {
-                mission = database.findMission(missionId);
-            }
+            int prerequisite = resultSet.getInt("PREREQUISITE");
+            int missionId = resultSet.getInt("MISSIONID");
+            Mission mission = database.findMission(missionId);
             TouristItinerary touristItinerary = new TouristItinerary(id, tourist, flight, mission);
             tourist.addToItinerary(touristItinerary);
             flight.addCustomerItinerary(touristItinerary);
             if (mission != null) {
                 mission.addPassengerItinerary(touristItinerary);
             }
-            if (prerequisite != null) {
-                itineraryMap.put(id, touristItinerary);
+            itineraryMap.put(id, touristItinerary); // in case something has touristItinerary as their prerequisite
+            if (prerequisite != 0) {
                 prerequisiteMap.put(id, prerequisite);
             }
         }

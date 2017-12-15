@@ -1,6 +1,5 @@
 package com.company.model;
 
-import java.io.FileNotFoundException;
 import java.util.*;
 
 public class Database {
@@ -41,7 +40,7 @@ public class Database {
         return null;
     }
 
-    public void insertTourist(Tourist tourist) throws FileNotFoundException {
+    public void insertTourist(Tourist tourist) {
         if (this.tourists.contains(tourist)) {
             System.out.println("Tourist already exists");
             return;
@@ -83,7 +82,7 @@ public class Database {
         return null;
     }
 
-    public void insertFlight(Flight newFlight) throws FileNotFoundException {
+    public void insertFlight(Flight newFlight) {
         if (this.flights.contains(newFlight)) {
             System.out.println("Flight already exists");
             return;

@@ -2,9 +2,10 @@ package com.company;
 
 import com.company.model.*;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -17,7 +18,7 @@ public class Main {
     private static Scanner input = new Scanner(System.in);
     private static Database database;
 
-    public static void main(String[] args) throws IOException, SQLException {
+    public static void main(String[] args) throws SQLException {
         Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/kerbaltourismdb?userSSL=false", "root", "pa55word!1");
         Statement statement = conn.createStatement();
         init(statement);
@@ -48,12 +49,12 @@ public class Main {
                 validateTouristItineraries();
             }
         } while (true);
-        Persister.write(database);
+        Persister.write(database, statement);
         statement.close();
         conn.close();
     }
 
-    private static void validateTouristItineraries() throws FileNotFoundException {
+    private static void validateTouristItineraries() {
         for (Tourist tourist : database.getTourists()) {
             System.out.println(String.format("Validating %s itinerary", tourist.getName()));
             if (!isValidItinerary(tourist)) {
@@ -280,7 +281,7 @@ public class Main {
         }
     }
 
-    private static void touristItinerary(Tourist tourist) throws FileNotFoundException {
+    private static void touristItinerary(Tourist tourist) {
         boolean modeFromValidateAll = tourist != null;
         do {
             String name = null;
@@ -504,7 +505,7 @@ public class Main {
         database.printFlights();
     }
 
-    private static void addNewFlight() throws FileNotFoundException {
+    private static void addNewFlight() {
         System.out.println("Please enter the origin of the new flight");
         String origin = input.nextLine();
         if (origin.equals("c")) {
@@ -535,7 +536,7 @@ public class Main {
         database.printTourists();
     }
 
-    private static void addNewTourist() throws FileNotFoundException {
+    private static void addNewTourist() {
         do {
             System.out.println("Please enter the name of the new tourist");
             String name = input.nextLine();
@@ -589,7 +590,7 @@ public class Main {
         } while (true);
     }
 
-    private static void init(Statement statement) throws SQLException, IOException {
+    private static void init(Statement statement) throws SQLException {
         database = Retriever.read(statement);
     }
 
