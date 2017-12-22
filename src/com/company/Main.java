@@ -431,6 +431,7 @@ public class Main {
             } while (!(patchPrerequisites.equals("y") || patchPrerequisites.equals("n")));
         }
         tourist.removeFromItinerary(itinerary, patchPrerequisites.equals("y"));
+        itinerary.getFlight().removeCustomerItinerary(itinerary);
     }
 
     private static void modifyItinerary(Tourist tourist, TouristItinerary itinerary) {

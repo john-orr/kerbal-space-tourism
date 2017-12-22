@@ -72,7 +72,7 @@ public class Flight extends EntityWithNumericId implements Comparable<Flight> {
         this.customerItineraries.add(touristItinerary);
     }
 
-    void removeCustomerItinerary(TouristItinerary touristItinerary) {
+    public void removeCustomerItinerary(TouristItinerary touristItinerary) {
         this.customerItineraries.remove(touristItinerary);
     }
 
