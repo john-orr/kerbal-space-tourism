@@ -248,7 +248,7 @@ public class Main {
                         do {
                             System.out.println("Enter vessel name");
                             String vesselName = input.nextLine();
-                            vessel = vesselName.equals("c") ? null : new Vessel(vesselName, "KERBIN", flight.getCapacity());
+                            vessel = vesselName.equals("c") ? null : new Vessel(vesselName.toUpperCase(), "KERBIN", flight.getCapacity());
                         } while (!database.createVessel(vessel));
                     } else {
                         String vesselName;
