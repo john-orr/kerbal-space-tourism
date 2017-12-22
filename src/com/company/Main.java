@@ -246,8 +246,11 @@ public class Main {
                     Vessel vessel;
                     if (flight.getOrigin().equals("KERBIN")) {
                         do {
-                            System.out.println("Enter vessel name");
-                            String vesselName = input.nextLine();
+                            String vesselName;
+                            do {
+                                System.out.println("Enter vessel name");
+                                vesselName = input.nextLine();
+                            } while (!(!vesselName.isEmpty() || vesselName.equals("c")));
                             vessel = vesselName.equals("c") ? null : new Vessel(vesselName.toUpperCase(), "KERBIN", flight.getCapacity());
                         } while (!database.createVessel(vessel));
                     } else {
@@ -507,21 +510,30 @@ public class Main {
     }
 
     private static void addNewFlight() {
-        System.out.println("Please enter the origin of the new flight");
-        String origin = input.nextLine();
-        if (origin.equals("c")) {
-            return;
-        }
-        System.out.println("Please enter the destination of the new flight");
-        String destination = input.nextLine();
-        if (destination.equals("c")) {
-            return;
-        }
-        System.out.println("Enter any flyby events on this flight");
-        String flyby = input.nextLine();
-        if (flyby.equals("c")) {
-            return;
-        }
+        String origin;
+        do {
+            System.out.println("Please enter the origin of the new flight");
+            origin = input.nextLine();
+            if (origin.equals("c")) {
+                return;
+            }
+        } while (origin.isEmpty());
+        String destination;
+        do {
+            System.out.println("Please enter the destination of the new flight");
+            destination = input.nextLine();
+            if (destination.equals("c")) {
+                return;
+            }
+        } while (destination.isEmpty());
+        String flyby;
+        do {
+            System.out.println("Enter any flyby events on this flight");
+            flyby = input.nextLine();
+            if (flyby.equals("c")) {
+                return;
+            }
+        } while (flyby.isEmpty());
         String capacity;
         do {
             System.out.println("Please enter the capacity of the new flight");
@@ -539,11 +551,14 @@ public class Main {
 
     private static void addNewTourist() {
         do {
-            System.out.println("Please enter the name of the new tourist");
-            String name = input.nextLine();
-            if (name.equals("c")) {
-                return;
-            }
+            String name;
+            do {
+                System.out.println("Please enter the name of the new tourist");
+                name = input.nextLine();
+                if (name.equals("c")) {
+                    return;
+                }
+            } while (name.isEmpty());
             Tourist newTourist = new Tourist(name);
             database.insertTourist(newTourist);
             String choice;
