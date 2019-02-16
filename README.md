@@ -10,4 +10,7 @@ Ctrl + C
 
 Connect to db without app
 mysql -u root -p
->password is pa55word!1
+password is pa55word!1
+
+Running database scripts:
+source full/path/to/file.sql
