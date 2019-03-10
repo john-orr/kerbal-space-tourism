@@ -250,7 +250,7 @@ public class Main {
                             do {
                                 System.out.println("Enter vessel name");
                                 vesselName = input.nextLine();
-                            } while (!(!vesselName.isEmpty() || vesselName.equals("c")));
+                            } while (vesselName.isEmpty());
                             vessel = vesselName.equals("c") ? null : new Vessel(vesselName.toUpperCase(), "KERBIN", flight.getCapacity());
                         } while (!database.createVessel(vessel));
                     } else {
